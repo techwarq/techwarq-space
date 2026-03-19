@@ -246,26 +246,32 @@ function AnimatedName() {
   const isHandle = !current.isSplit && !isAnimating;
 
   return (
-    <div style={{ position: "relative", minHeight: "180px", marginBottom: 8, display: "flex", alignItems: "flex-start" }} className="hero-name-container">
+    <div style={{ position: "relative", minHeight: "220px", marginBottom: 32, display: "flex", alignItems: "flex-start", width: "100%" }} className="hero-name-container">
       <h1 className="hero-h1" style={{
         ...disp,
-        fontSize: isHandle ? "clamp(50px,8vw,110px)" : "clamp(60px,12vw,140px)",
+        fontSize: isHandle ? "clamp(55px,9vw,115px)" : "clamp(65px,11vw,145px)",
         lineHeight: 0.85, letterSpacing: 2, color: WHITE,
-        transition: "font-size 0.3s ease",
+        textTransform: isHandle ? "lowercase" : "uppercase",
+        transition: "font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         opacity,
         position: "absolute",
         top: 0, left: 0,
-        margin: 0
+        margin: 0,
+        width: "100%",
+        whiteSpace: "nowrap"
       }}>
         {displayLine1}
         {displayLine2 && <><br /><span className="hero-h1-accent" style={{ color: AMBER }}>{displayLine2}</span></>}
       </h1>
       <style>{`
+        @media (max-width: 1024px) {
+          .hero-name-container { min-height: 180px; }
+        }
         @media (max-width: 768px) {
-          .hero-name-container { min-height: 160px !important; }
+          .hero-name-container { min-height: 140px; }
         }
         @media (max-width: 480px) {
-          .hero-name-container { min-height: 130px !important; }
+          .hero-name-container { min-height: 110px; }
         }
       `}</style>
     </div>
@@ -276,7 +282,7 @@ function AnimatedName() {
 const Tag = ({ ch, color }: { ch: string; color?: string }) => {
   const c = color || AMBER;
   return (
-    <span style={{ ...mono, fontSize: 10, color: GREY, border: `1px solid ${BORDER}`, padding: "3px 10px", letterSpacing: 2, textTransform: "uppercase", cursor: "default", display: "inline-block", transition: "all .2s" }}
+    <span style={{ ...mono, fontSize: 10, color: GREY, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "3px 10px", letterSpacing: 2, textTransform: "uppercase", cursor: "default", display: "inline-block", transition: "all .2s" }}
       onMouseEnter={e => { (e.currentTarget as any).style.color = c; (e.currentTarget as any).style.borderColor = c; }}
       onMouseLeave={e => { (e.currentTarget as any).style.color = GREY; (e.currentTarget as any).style.borderColor = BORDER; }}>
       {ch}
@@ -288,7 +294,7 @@ const SectionLabel = ({ num, title, accent }: { num: string; title: string; acce
   const c = accent || AMBER;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 48 }}>
-      <span style={{ ...mono, fontSize: 9, color: c, border: `1px solid ${c}`, padding: "4px 10px", letterSpacing: 3, textTransform: "uppercase", whiteSpace: "nowrap" }}>{num}</span>
+      <span style={{ ...mono, fontSize: 9, color: c, borderWidth: "1px", borderStyle: "solid", borderColor: c, padding: "4px 10px", letterSpacing: 3, textTransform: "uppercase", whiteSpace: "nowrap" }}>{num}</span>
       <h2 style={{ ...disp, fontSize: "clamp(36px,6vw,56px)", letterSpacing: 4, color: WHITE, lineHeight: 1 }}>{title}</h2>
       <div style={{ flex: 1, height: 1, background: BORDER, minWidth: 20 }} />
     </div>
@@ -299,29 +305,46 @@ const SectionLabel = ({ num, title, accent }: { num: string; title: string; acce
 const LINES = [
   { text: "$ whoami",                                 color: DIM,     delay: 0    },
   { text: "> SONALI NAYAK — fullstack developer",        color: AMBER,   delay: 500  },
-  { text: "$ cat stack.txt",                          color: DIM,     delay: 1200 },
-  { text: "> react · next.js · node · typescript",    color: SAGE,    delay: 1800 },
-  { text: "> tailwind · prisma · postgres · redis",   color: SAGE,    delay: 2200 },
-  { text: "$ status",                                 color: DIM,     delay: 2900 },
-  { text: "> 5 yrs · 40+ shipped · available now",    color: TERRA,   delay: 3500 },
+  { text: "$ cat stack.txt",                          color: DIM,     delay: 1500 },
+  { text: "> react · next.js · node · typescript",    color: SAGE,    delay: 2200 },
+  { text: "> tailwind · prisma · postgres · redis",   color: SAGE,    delay: 3000 },
+  { text: "$ status",                                 color: DIM,     delay: 3800 },
+  { text: "> 5 yrs · 40+ shipped · available now",    color: TERRA,   delay: 4500 },
 ];
+
+function TypewriterLine({ text, color, active }: { text: string; color: string; active: boolean }) {
+  const [display, setDisplay] = useState("");
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplay(text.slice(0, i + 1));
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, 30);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return (
+    <div style={{ ...mono, fontSize: 12, color, lineHeight: 2.1, letterSpacing: 0.5 }}>
+      {display}
+      {active && <span style={{ display: "inline-block", width: 8, height: 14, marginLeft: 4, verticalAlign: "middle", background: AMBER, animation: "blink 1s step-end infinite" }} />}
+    </div>
+  );
+}
 
 function Terminal() {
   const [shown, setShown] = useState(0);
   useEffect(() => { LINES.forEach((l, i) => setTimeout(() => setShown(i + 1), l.delay)); }, []);
   return (
-    <div style={{ background: "#0E0C0A", border: `1px solid ${BORDER}`, borderLeft: `3px solid ${AMBER}`, padding: 24 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20, paddingBottom: 16, borderBottom: `1px solid ${BORDER}` }}>
+    <div style={{ background: "#0E0C0A", borderWidth: "1px 1px 1px 3px", borderStyle: "solid", borderColor: `${BORDER} ${BORDER} ${BORDER} ${AMBER}`, padding: 24 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20, paddingBottom: 16, borderWidth: "0 0 1px 0", borderStyle: "solid", borderColor: BORDER }}>
         <div style={{ width: 11, height: 11, borderRadius: "50%", background: TERRA }} />
         <div style={{ width: 11, height: 11, borderRadius: "50%", background: AMBER, opacity: 0.7 }} />
         <div style={{ width: 11, height: 11, borderRadius: "50%", background: SAGE, opacity: 0.7 }} />
         <span style={{ ...mono, fontSize: 10, color: DIM, marginLeft: 12, letterSpacing: 2, textTransform: "uppercase" }}>bash — portfolio.sh</span>
       </div>
       {LINES.slice(0, shown).map((l, i) => (
-        <div key={i} style={{ ...mono, fontSize: 12, color: l.color, lineHeight: 2.1, letterSpacing: 0.5, animation: "fadeUp .3s ease" }}>
-          {l.text}
-          {i === shown - 1 && <span style={{ display: "inline-block", width: 8, height: 14, marginLeft: 4, verticalAlign: "middle", background: AMBER, animation: "blink 1s step-end infinite" }} />}
-        </div>
+        <TypewriterLine key={i} text={l.text} color={l.color} active={i === shown - 1} />
       ))}
     </div>
   );
@@ -427,8 +450,10 @@ function ProjectCard({ p }: { p: Project }) {
   if (p.featured) return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       className="featured-card"
-      style={{ gridColumn: "span 2", display: "grid", gridTemplateColumns: "1fr 1fr", background: CARD, border: `1px solid ${BORDER}`, transition: "all .25s", cursor: "crosshair", ...hS }}>
-      <div className="featured-visual" style={{ borderRight: `1px solid ${BORDER}`, minHeight: 280, display: "flex", alignItems: "center", justifyContent: "center", background: "#0E0C0A", position: "relative", overflow: "hidden" }}>
+      style={{ gridColumn: "span 2", display: "grid", gridTemplateColumns: "1fr 1fr", background: CARD, 
+        borderWidth: "1px", borderStyle: "solid", borderColor: BORDER,
+        transition: "all .25s", cursor: "crosshair", ...hS }}>
+      <div className="featured-visual" style={{ borderWidth: "0 1px 0 0", borderStyle: "solid", borderColor: BORDER, minHeight: 280, display: "flex", alignItems: "center", justifyContent: "center", background: "#0E0C0A", position: "relative", overflow: "hidden" }}>
         {/* retro stripe accent */}
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 6, display: "flex" }}>
           <div style={{ flex: 1, background: AMBER }} />
@@ -448,7 +473,7 @@ function ProjectCard({ p }: { p: Project }) {
           <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 1.9, marginBottom: 18 }}>{p.desc}</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{p.stack.map(s => <Tag key={s} ch={s} color={ac} />)}</div>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${BORDER}`, paddingTop: 18, marginTop: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER, paddingTop: 18, marginTop: 24 }}>
           <div>
             <span style={{ ...disp, fontSize: 38, color: ac, lineHeight: 1 }}>{p.metric.val}</span>
             <span style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 2, textTransform: "uppercase", marginLeft: 8 }}>{p.metric.label}</span>
@@ -461,7 +486,7 @@ function ProjectCard({ p }: { p: Project }) {
 
   return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: CARD, border: `1px solid ${BORDER}`, padding: "36px 30px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden", cursor: "crosshair", transition: "all .25s", ...hS }}>
+      style={{ background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "36px 30px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden", cursor: "crosshair", transition: "all .25s", ...hS }}>
       <div style={{ position: "absolute", top: 0, left: 0, height: 3, background: ac, width: hov ? "100%" : 0, transition: "width .4s ease" }} />
       <div>
         <span style={{ ...mono, fontSize: 9, color: ac, letterSpacing: 3, textTransform: "uppercase", display: "block", marginBottom: 16 }}>PROJECT {p.num}</span>
@@ -472,7 +497,7 @@ function ProjectCard({ p }: { p: Project }) {
         <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 1.9, marginBottom: 16 }}>{p.desc}</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{p.stack.map(s => <Tag key={s} ch={s} color={ac} />)}</div>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${BORDER}`, paddingTop: 16, marginTop: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER, paddingTop: 16, marginTop: 20 }}>
         <div>
           <span style={{ ...disp, fontSize: 30, color: ac, lineHeight: 1 }}>{p.metric.val}</span>
           <span style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 2, textTransform: "uppercase", marginLeft: 8 }}>{p.metric.label}</span>
@@ -596,7 +621,10 @@ export default function Portfolio() {
               {[{ label: "VIEW WORK →", id: "work", bg: AMBER, fg: BG },
                 { label: "GET IN TOUCH", id: "contact", bg: "none", fg: WHITE, border: BORDER }].map(btn => (
                 <button key={btn.label} onClick={() => scrollTo(btn.id)}
-                  style={{ ...mono, background: btn.bg, color: btn.fg, border: btn.border ? `1px solid ${btn.border}` : "none",
+                  style={{ ...mono, background: btn.bg, color: btn.fg, 
+                    borderWidth: btn.border ? "1px" : "0px",
+                    borderStyle: btn.border ? "solid" : "none",
+                    borderColor: btn.border || "transparent",
                     padding: "14px 28px", fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
                     fontWeight: btn.bg !== "none" ? 700 : 400, cursor: "pointer", transition: "all .2s" }}
                   onMouseEnter={e => { (e.currentTarget as any).style.transform = "translate(-2px,-2px)"; (e.currentTarget as any).style.boxShadow = `4px 4px 0 ${BORDER2}`;
@@ -653,7 +681,7 @@ export default function Portfolio() {
             { label: "INFRA",    accent: AMBER, tags: ["Docker","AWS","Vercel","CI/CD","Vitest","Playwright","Turborepo"] },
           ].map(block => (
             <div key={block.label}
-              style={{ background: CARD, border: `1px solid ${BORDER}`, padding: "20px 22px", transition: "border-color .2s, box-shadow .2s", cursor: "crosshair" }}
+              style={{ background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "20px 22px", transition: "border-color .2s, box-shadow .2s", cursor: "crosshair" }}
               onMouseEnter={e => { (e.currentTarget as any).style.borderColor = block.accent; (e.currentTarget as any).style.boxShadow = `3px 3px 0 ${block.accent}`; }}
               onMouseLeave={e => { (e.currentTarget as any).style.borderColor = BORDER; (e.currentTarget as any).style.boxShadow = "none"; }}>
               <div style={{ ...mono, fontSize: 9, color: block.accent, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>// {block.label}</div>
@@ -664,14 +692,14 @@ export default function Portfolio() {
       </section>
 
       {/* ── WORK ─────────────────────────────────────────────── */}
-      <section id="work" className="work-section" style={{ padding: "100px 48px", borderBottom: `1px solid ${BORDER}` }}>
+      <section id="work" className="work-section" style={{ padding: "100px 48px", borderWidth: "0 0 1px 0", borderStyle: "solid", borderColor: BORDER }}>
         <SectionLabel num="03" title="SELECTED WORK" accent={TERRA} />
         <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, background: BORDER }}>
           {PROJECTS.map(p => <ProjectCard key={p.num} p={p} />)}
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 20 }}>
           <a href="#"
-            style={{ ...mono, fontSize: 11, color: GREY, letterSpacing: 2, textTransform: "uppercase", textDecoration: "none", border: `1px solid ${BORDER}`, padding: "12px 24px", transition: "all .2s" }}
+            style={{ ...mono, fontSize: 11, color: GREY, letterSpacing: 2, textTransform: "uppercase", textDecoration: "none", borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "12px 24px", transition: "all .2s" }}
             onMouseEnter={e => { (e.currentTarget as any).style.color = AMBER; (e.currentTarget as any).style.borderColor = AMBER; }}
             onMouseLeave={e => { (e.currentTarget as any).style.color = GREY;  (e.currentTarget as any).style.borderColor = BORDER; }}>
             ALL PROJECTS →
@@ -701,7 +729,7 @@ export default function Portfolio() {
               { label: "TWITTER",  val: "@yourhandle",              href: "#",                         c: AMBER },
               { label: "STATUS",   val: "● AVAILABLE NOW",          special: SAGE },
             ].map(row => (
-              <div key={row.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 0", borderTop: `1px solid ${BORDER}` }}>
+              <div key={row.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 0", borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER }}>
                 <span style={{ ...mono, fontSize: 9, color: row.c || SAGE, letterSpacing: 2, textTransform: "uppercase", width: 76, flexShrink: 0 }}>{row.label}</span>
                 {row.href
                   ? <a href={row.href} style={{ ...mono, fontSize: 12, color: WHITE, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", transition: "color .2s" }}
@@ -724,7 +752,7 @@ export default function Portfolio() {
               <label style={{ ...mono, fontSize: 9, color: f.ac, letterSpacing: 2, textTransform: "uppercase" }}>{f.label}</label>
               <input type={f.type} placeholder={f.placeholder} value={form[f.key as keyof typeof form]}
                 onChange={e => setForm({ ...form, [f.key as keyof typeof form]: e.target.value })}
-                style={{ ...mono, background: CARD, border: `1px solid ${BORDER}`, color: WHITE, fontSize: 12, letterSpacing: 1, textTransform: "uppercase", padding: "14px 16px", outline: "none", cursor: "text", transition: "border-color .2s", width: "100%" }}
+                style={{ ...mono, background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, color: WHITE, fontSize: 12, letterSpacing: 1, textTransform: "uppercase", padding: "14px 16px", outline: "none", cursor: "text", transition: "border-color .2s", width: "100%" }}
                 onFocus={e => (e.currentTarget as any).style.borderColor = f.ac}
                 onBlur={e => (e.currentTarget as any).style.borderColor = BORDER} />
             </div>
@@ -733,7 +761,7 @@ export default function Portfolio() {
             <label style={{ ...mono, fontSize: 9, color: SAGE, letterSpacing: 2, textTransform: "uppercase" }}>MESSAGE</label>
             <textarea rows={5} placeholder="TELL ME ABOUT YOUR PROJECT..." value={form.msg}
               onChange={e => setForm({ ...form, msg: e.target.value })}
-              style={{ ...mono, background: CARD, border: `1px solid ${BORDER}`, color: WHITE, fontSize: 12, letterSpacing: 1, textTransform: "uppercase", padding: "14px 16px", outline: "none", resize: "vertical", cursor: "text", transition: "border-color .2s", width: "100%" }}
+              style={{ ...mono, background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, color: WHITE, fontSize: 12, letterSpacing: 1, textTransform: "uppercase", padding: "14px 16px", outline: "none", resize: "vertical", cursor: "text", transition: "border-color .2s", width: "100%" }}
               onFocus={e => (e.currentTarget as any).style.borderColor = SAGE}
               onBlur={e => (e.currentTarget as any).style.borderColor = BORDER} />
           </div>
@@ -747,7 +775,7 @@ export default function Portfolio() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────── */}
-      <footer style={{ borderTop: `1px solid ${BORDER}`, padding: "24px 32px" }}>
+      <footer style={{ borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER, padding: "24px 32px" }}>
         {/* retro stripe top */}
         <div style={{ display: "flex", height: 2, marginBottom: 24, gap: 1 }}>
           <div style={{ flex: 1, background: AMBER, opacity: 0.4 }} />

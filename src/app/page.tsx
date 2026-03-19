@@ -249,7 +249,7 @@ function AnimatedName() {
     <div style={{ position: "relative", minHeight: "180px", marginBottom: 8, display: "flex", alignItems: "flex-start" }} className="hero-name-container">
       <h1 className="hero-h1" style={{
         ...disp,
-        fontSize: isHandle ? "clamp(50px,8vw,110px)" : "clamp(60px,10vw,140px)",
+        fontSize: isHandle ? "clamp(50px,8vw,110px)" : "clamp(60px,12vw,140px)",
         lineHeight: 0.85, letterSpacing: 2, color: WHITE,
         transition: "font-size 0.3s ease",
         opacity,
@@ -260,10 +260,12 @@ function AnimatedName() {
         {displayLine1}
         {displayLine2 && <><br /><span className="hero-h1-accent" style={{ color: AMBER }}>{displayLine2}</span></>}
       </h1>
-      {/* Mobile media query override for container height to prevent huge gaps */}
       <style>{`
         @media (max-width: 768px) {
-          .hero-name-container { minHeight: 120px !important; }
+          .hero-name-container { min-height: 160px !important; }
+        }
+        @media (max-width: 480px) {
+          .hero-name-container { min-height: 130px !important; }
         }
       `}</style>
     </div>

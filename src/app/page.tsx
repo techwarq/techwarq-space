@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 /* ── RETRO PALETTE ──────────────────────────────────────────── */
 const AMBER      = "#DFA05D";   // primary accent — warm gold
@@ -149,6 +149,124 @@ function GrainOverlay() {
       animation: "grainShift 0.4s steps(1) infinite",
       imageRendering: "pixelated",
     }} />
+  );
+}
+
+/* ── ANIMATED HERO NAME ─────────────────────────────────────── */
+const GLITCH_CHARS = "!@#$%^&*<>{}[]|/\\~";
+const NAME_STATES = [
+  { line1: "SONALI", line2: "NAYAK", isSplit: true },
+  { line1: "@techwarq", line2: "", isSplit: false },
+];
+
+function AnimatedName() {
+  const [stateIdx, setStateIdx] = useState(0);
+  const [displayLine1, setDisplayLine1] = useState(NAME_STATES[0].line1);
+  const [displayLine2, setDisplayLine2] = useState(NAME_STATES[0].line2);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [opacity, setOpacity] = useState(1);
+
+  const scrambleTo = useCallback((targetIdx: number) => {
+    const target = NAME_STATES[targetIdx];
+    const t1 = target.line1;
+    const t2 = target.line2;
+    const totalSteps = 18;
+    let step = 0;
+    setIsAnimating(true);
+
+    const interval = setInterval(() => {
+      step++;
+      const progress = step / totalSteps;
+      // Ease-out curve for smoother resolution
+      const eased = 1 - Math.pow(1 - progress, 2);
+
+      // Build line1: characters resolve left-to-right with easing
+      let l1 = "";
+      for (let i = 0; i < t1.length; i++) {
+        const charThreshold = (i + 0.5) / t1.length;
+        if (eased >= charThreshold) {
+          l1 += t1[i];
+        } else {
+          l1 += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+        }
+      }
+      setDisplayLine1(l1);
+
+      // Build line2
+      if (t2.length > 0) {
+        let l2 = "";
+        for (let i = 0; i < t2.length; i++) {
+          const charThreshold = (i + 0.5) / t2.length;
+          if (eased >= charThreshold) {
+            l2 += t2[i];
+          } else {
+            l2 += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+          }
+        }
+        setDisplayLine2(l2);
+      } else {
+        // Fade out line2 quickly in the first third
+        if (progress < 0.35) {
+          let l2 = "";
+          const fadeLen = Math.max(0, Math.ceil(5 * (1 - progress / 0.35)));
+          for (let i = 0; i < fadeLen; i++) {
+            l2 += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+          }
+          setDisplayLine2(l2);
+        } else {
+          setDisplayLine2("");
+        }
+      }
+
+      // Smooth opacity pulse during transition
+      setOpacity(progress < 0.15 ? 0.7 + progress * 2 : 1);
+
+      if (step >= totalSteps) {
+        clearInterval(interval);
+        setDisplayLine1(t1);
+        setDisplayLine2(t2);
+        setStateIdx(targetIdx);
+        setIsAnimating(false);
+        setOpacity(1);
+      }
+    }, 28);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!isAnimating) {
+        const nextIdx = stateIdx === 0 ? 1 : 0;
+        scrambleTo(nextIdx);
+      }
+    }, 2500);
+    return () => clearInterval(timer);
+  }, [stateIdx, isAnimating, scrambleTo]);
+
+  const current = NAME_STATES[stateIdx];
+  const isHandle = !current.isSplit && !isAnimating;
+
+  return (
+    <div style={{ position: "relative", minHeight: "180px", marginBottom: 8, display: "flex", alignItems: "flex-start" }} className="hero-name-container">
+      <h1 className="hero-h1" style={{
+        ...disp,
+        fontSize: isHandle ? "clamp(50px,8vw,110px)" : "clamp(60px,10vw,140px)",
+        lineHeight: 0.85, letterSpacing: 2, color: WHITE,
+        transition: "font-size 0.3s ease",
+        opacity,
+        position: "absolute",
+        top: 0, left: 0,
+        margin: 0
+      }}>
+        {displayLine1}
+        {displayLine2 && <><br /><span className="hero-h1-accent" style={{ color: AMBER }}>{displayLine2}</span></>}
+      </h1>
+      {/* Mobile media query override for container height to prevent huge gaps */}
+      <style>{`
+        @media (max-width: 768px) {
+          .hero-name-container { minHeight: 120px !important; }
+        }
+      `}</style>
+    </div>
   );
 }
 
@@ -438,9 +556,7 @@ export default function Portfolio() {
               <span className="hero-label-box" style={{ background: AMBER, color: BG, padding: "3px 10px", marginRight: 12, fontWeight: 700 }}>01</span>
               <span className="hero-label-text" style={{ color: AMBER }}>DEVELOPER PORTFOLIO</span>
             </div>
-            <h1 className="hero-h1" style={{ ...disp, fontSize: "clamp(80px,11vw,156px)", lineHeight: 0.88, letterSpacing: 2, color: WHITE, marginBottom: 8 }}>
-              SONALI<br /><span className="hero-h1-accent" style={{ color: AMBER }}>NAYAK</span>
-            </h1>
+            <AnimatedName />
             <div className="hero-role" style={{ ...disp, fontSize: "clamp(22px,3vw,44px)", color: GREY, letterSpacing: 5, marginBottom: 36 }}>
               FULLSTACK DEVELOPER
             </div>

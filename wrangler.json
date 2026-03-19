@@ -1,0 +1,13 @@
+{
+  "name": "techwarq-space",
+  "compatibility_date": "2024-09-23",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "techwarq-space"
+    }
+  ]
+}

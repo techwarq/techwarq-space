@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "opennextjs-cloudflare build",
+    "build": "opennextjs-cloudflare build && mv .open-next/worker.js .open-next/_worker.js || true",
     "build:worker": "opennextjs-cloudflare build",
     "build:next": "next build",
     "start": "next start",

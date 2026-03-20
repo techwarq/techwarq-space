@@ -1,7 +1,7 @@
 {
   "name": "techwarq-space",
   "main": ".open-next/worker.js",
-  "compatibility_date": "2024-09-23",
+  "compatibility_date": "2024-11-20",
   "compatibility_flags": [
     "nodejs_compat"
   ],

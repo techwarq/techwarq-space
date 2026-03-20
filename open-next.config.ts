@@ -1,4 +1,8 @@
-import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+const config = {
+  buildCommand: "npx next build",
+  middleware: {
+    external: [],
+  },
+};
 
-export default defineCloudflareConfig({
-});
+export default config;

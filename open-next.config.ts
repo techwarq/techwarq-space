@@ -1,5 +1,7 @@
 const config = {
-  buildCommand: "npx next build",
+  default: {
+    buildCommand: "npx next build",
+  },
   middleware: {
     external: [],
   },

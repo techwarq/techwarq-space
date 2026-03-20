@@ -1,10 +1,9 @@
-const config = {
-  default: {
-    buildCommand: "npx next build",
-  },
-  middleware: {
-    external: [],
-  },
-};
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+
+const config = defineCloudflareConfig({
+});
+
+// @ts-ignore
+config.buildCommand = "npm run build:next";
 
 export default config;

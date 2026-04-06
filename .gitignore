@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large binaries (FlowDesk)
+public/FlowDesk-0.1.2-arm64.dmg
+public/FlowDesk-Setup-0.1.2.exe

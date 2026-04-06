@@ -587,6 +587,189 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* --- FLOWDESK (ASTRA) SECTION --- */}
+        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            flowdesk (astra) — e-commerce automation & dashboard
+          </h1>
+
+          <ul style={{
+            paddingLeft: "28px",
+            marginBottom: "48px",
+            lineHeight: "1.8",
+            fontSize: "15px",
+            listStyleType: "disc",
+            color: "#d4d4d4"
+          }}>
+            <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+              built a high-performance e-commerce operations suite — FlowDesk (ASTRA) — <span style={{ color: "#a0a0a0" }}>processing 1,500+ accounts daily for enterprise clients</span> <br />
+              link→ <span style={{ color: "#666", fontStyle: "italic" }}>private client instance</span> <br />
+              managing bulk orders across 9+ platforms (Amazon, Vivo, Flipkart, etc.) is an operational bottleneck. this RPA suite automates tracking, IP-allocation, and bulk link execution via a custom in-app browser. <br />
+              here is the technical breakdown.
+            </li>
+            <li style={{ paddingLeft: "8px" }}>
+              behind the scenes: engineered a sophisticated Playwright RPA engine and custom Electron browser to automate massive-scale e-commerce operations.<br />
+              <div style={{ color: "#a0a0a0", fontSize: "14px", paddingLeft: "12px", borderLeft: "2px solid rgba(255,255,255,0.1)", marginTop: "12px", marginBottom: "8px" }}>
+                <span style={{ color: "#d4d4d4" }}>1. multi-platform hub:</span> automated order tracking across 9+ major e-commerce websites, handling complex navigation and MFA flows via Node.js.<br />
+                <span style={{ color: "#d4d4d4" }}>2. in-app bulk browser:</span> custom browser engine for simultaneous link execution, allowing users to open and manage hundreds of product links for bulk ordering.<br />
+                <span style={{ color: "#d4d4d4" }}>3. intelligent ip allocation:</span> advanced routing and IP management to maintain account health and bypass sophisticated anti-bot protections.<br />
+                <span style={{ color: "#d4d4d4" }}>4. high-performance dashboard:</span> real-time UI monitoring 1,500+ daily active accounts with sub-second filtering, search, and session persistence.<br />
+                <span style={{ color: "#d4d4d4" }}>5. operational intelligence:</span> integrated CSV exports for logistics, smart batch fetching, and automated chatbot-driven customer updates.<br />
+                <span style={{ color: "#d4d4d4" }}>6. ai-powered order intelligence:</span> implemented a RAG-based chatbot with a Vector Database to allow users to query complex order details and logistics history via natural language.
+              </div>
+            </li>
+          </ul>
+
+          {/* FlowDesk Dashboard Mockup */}
+          <div style={{ 
+            marginBottom: "48px", 
+            borderRadius: "24px", 
+            overflow: "hidden", 
+            border: "1px solid rgba(255,255,255,0.05)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            backgroundColor: "#000"
+          }}>
+            <div style={{ 
+              padding: "12px 20px", 
+              backgroundColor: "rgba(255,255,255,0.03)", 
+              borderBottom: "1px solid rgba(255,255,255,0.05)", 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "10px" 
+            }}>
+              <div style={{ display: "flex", gap: "6px" }}>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ff5f56" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
+              </div>
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>flowdesk_astra_admin_v4.0.app</span>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/flowdesk-ui.png" 
+              alt="FlowDesk (ASTRA) Admin Intelligence UI" 
+              style={{ 
+                width: "100%", 
+                display: "block",
+                opacity: "1.0"
+              }} 
+            />
+          </div>
+
+          {/* Downloads & Credentials */}
+          <div style={{ 
+            marginTop: "32px", 
+            marginBottom: "48px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px"
+          }}>
+            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+              <a 
+                href="/FlowDesk-0.1.2-arm64.dmg" 
+                download 
+                className="pow-download-btn"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#fff",
+                  padding: "12px 20px",
+                  borderRadius: "14px",
+                  fontSize: "14px",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19V5M5 12l7 7 7-7"/>
+                </svg>
+                Download for Mac (arm64)
+              </a>
+              <a 
+                href="/FlowDesk-Setup-0.1.2.exe" 
+                download 
+                className="pow-download-btn"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#fff",
+                  padding: "12px 20px",
+                  borderRadius: "14px",
+                  fontSize: "14px",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19V5M5 12l7 7 7-7"/>
+                </svg>
+                Download for Windows (.exe)
+              </a>
+            </div>
+
+            <div style={{
+              padding: "16px 20px",
+              borderRadius: "16px",
+              backgroundColor: "rgba(0,132,255,0.05)",
+              border: "1px solid rgba(0,132,255,0.1)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "12px",
+              width: "fit-content"
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0084FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span style={{ fontSize: "13px", color: "#0084FF", fontWeight: "500" }}>
+                Access Credentials: <span style={{ color: "#d4d4d4", marginLeft: "8px" }}>u: testuser / p: testuser123</span>
+              </span>
+            </div>
+          </div>
+
+          <div style={{ marginTop: "48px" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "24px" }}>
+              <h3 style={{ fontSize: "18px", color: "#fff", margin: 0 }}>automation tech stack</h3>
+              <span style={{ fontSize: "13px", color: "#666" }}>robotic process automation & real-time monitoring</span>
+            </div>
+            
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
+              gap: "16px" 
+            }}>
+              {[
+                { label: "Frontend", value: "React 19, Tailwind v4, Lucide" },
+                { label: "Automation", value: "Playwright (RPA), Node.js, TS" },
+                { label: "Intelligence", value: "LLM (Gemini), Vector DB (Qdrant), RAG" },
+                { label: "Architecture", value: "Electron Desktop App, Persistent Contexts" }
+              ].map((stack, idx) => (
+                <div key={idx} style={{
+                  padding: "20px",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  backgroundColor: "rgba(255,255,255,0.02)",
+                  backdropFilter: "blur(4px)"
+                }}>
+                  <div style={{ fontSize: "11px", color: "#666", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>{stack.label}</div>
+                  <div style={{ fontSize: "14px", color: "#d4d4d4" }}>{stack.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -63,10 +63,7 @@ export default function ProofOfWork() {
              visibility: hidden;
           }
         }
-        .spellcheck-squiggly {
-          text-decoration: underline wavy rgba(255, 60, 60, 0.5);
-          text-underline-offset: 3px;
-        }
+
         .video-scroll-container::-webkit-scrollbar {
           display: none;
         }
@@ -110,11 +107,11 @@ export default function ProofOfWork() {
           color: "#d4d4d4"
         }}>
           <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
-            been working on an AI <span className="spellcheck-squiggly">ugc</span> agent — <span style={{ color: "#a0a0a0" }}>live on the platform right now</span> <br />
+            been working on an AI ugc agent — <span style={{ color: "#a0a0a0" }}>live on the platform right now</span> <br />
             link→ <a href="https://nagent.ai/dashboard/ugc" className="pow-link" target="_blank" rel="noopener noreferrer">
               https://nagent.ai/dashboard/ugc
             </a> <br />
-            anyone can drop a script or product link and generate high-fidelity <span className="spellcheck-squiggly">ugc</span> videos from scratch. <br />
+            anyone can drop a script or product link and generate high-fidelity ugc videos from scratch. <br />
             here are some outcomes.
           </li>
           <li style={{ paddingLeft: "8px" }}>
@@ -226,7 +223,7 @@ export default function ProofOfWork() {
             color: "#d4d4d4"
           }}>
             <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
-              built an AI <span className="spellcheck-squiggly">virtual photoshoot</span> agent — <span style={{ color: "#a0a0a0" }}>live on the platform</span> <br />
+              built an AI virtual photoshoot agent — <span style={{ color: "#a0a0a0" }}>live on the platform</span> <br />
               link→ <a href="https://nagent.ai/dashboard/virtual-photoshoot-agent" className="pow-link" target="_blank" rel="noopener noreferrer">
                 https://nagent.ai/dashboard/virtual-photoshoot-agent
               </a> <br />
@@ -452,7 +449,7 @@ export default function ProofOfWork() {
             color: "#d4d4d4"
           }}>
             <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
-              built an <span className="spellcheck-squiggly">enterprise campaign</span> hub — <span style={{ color: "#a0a0a0" }}>live for bulk advertisers</span> <br />
+              built an enterprise campaign hub — <span style={{ color: "#a0a0a0" }}>live for bulk advertisers</span> <br />
               link→ <a href="https://nagent.ai/dashboard/campaign-hub" className="pow-link" target="_blank" rel="noopener noreferrer">
                 https://nagent.ai/dashboard/campaign-hub
               </a> <br />

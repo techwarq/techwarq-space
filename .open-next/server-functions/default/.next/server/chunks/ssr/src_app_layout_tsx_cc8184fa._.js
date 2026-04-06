@@ -1,0 +1,3 @@
+module.exports=[27572,a=>{"use strict";var b=a.i(7997);function c({children:a}){return(0,b.jsxs)("html",{lang:"en",className:"h-full antialiased",children:[(0,b.jsx)("head",{children:(0,b.jsx)("link",{href:"https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;700&display=swap",rel:"stylesheet"})}),(0,b.jsx)("body",{className:"min-h-full flex flex-col",children:a})]})}a.s(["default",()=>c,"metadata",0,{title:"Sonali Nayak — Fullstack Developer",description:"Portfolio of Sonali Nayak — Fullstack Developer"}])}];
+
+//# sourceMappingURL=src_app_layout_tsx_cc8184fa._.js.map

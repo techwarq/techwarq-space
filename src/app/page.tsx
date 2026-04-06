@@ -1,800 +1,596 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 
-/* ── RETRO PALETTE ──────────────────────────────────────────── */
-const AMBER      = "#DFA05D";   // primary accent — warm gold
-const TERRA      = "#AC5045";   // secondary — terracotta red
-const SAGE       = "#658761";   // tertiary — sage green
-const WHITE      = "#F2EDE4";   // warm off-white (aged paper)
-const GREY       = "#9A9080";   // warm grey
-const DIM        = "#5A5248";   // dimmed text
-const BG         = "#141210";   // near-black with warm tint
-const CARD       = "#1C1916";   // card background
-const BORDER     = "#2E2A26";   // warm dark border
-const BORDER2    = "#3D3830";   // slightly lighter border
-
-const mono = { fontFamily: "'JetBrains Mono', monospace" };
-const disp = { fontFamily: "'Bebas Neue', sans-serif" };
-
-/* ── GLOBAL CSS ─────────────────────────────────────────────── */
-const GlobalStyles = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;700&display=swap');
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: #141210; overflow-x: hidden; }
-    ::selection { background: #DFA05D; color: #141210; }
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: #141210; }
-    ::-webkit-scrollbar-thumb { background: #DFA05D; }
-
-    @keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
-    @keyframes blink   { 0%,100%{opacity:1} 50%{opacity:0} }
-    @keyframes ticker  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-    @keyframes pulse   { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    @keyframes slideIn { from{transform:translateX(100%)} to{transform:translateX(0)} }
-    @keyframes grainShift {
-      0%   { transform: translate(0px, 0px); }
-      10%  { transform: translate(-2px, 1px); }
-      20%  { transform: translate(2px, -2px); }
-      30%  { transform: translate(-1px, 2px); }
-      40%  { transform: translate(2px, 1px); }
-      50%  { transform: translate(-2px, -1px); }
-      60%  { transform: translate(1px, 2px); }
-      70%  { transform: translate(-1px, -2px); }
-      80%  { transform: translate(2px, 2px); }
-      90%  { transform: translate(-2px, 0px); }
-      100% { transform: translate(0px, 0px); }
-    }
-    .grain-overlay {
-      position: fixed; inset: -20%;
-      width: 140%; height: 140%;
-      pointer-events: none; z-index: 9998;
-      opacity: 0.09;
-      animation: grainShift 0.4s steps(1) infinite;
-    }
-
-    /* ── MOBILE ≤768px ── */
-    @media (max-width: 768px) {
-      .desktop-nav-links { display: none !important; }
-      .hamburger          { display: flex !important; }
-
-      .hero-section {
-        grid-template-columns: 1fr !important;
-        min-height: auto !important;
-        background: ${AMBER} !important;
-        border-bottom: 3px solid ${BG} !important;
-      }
-      .hero-left {
-        border-right: none !important;
-        padding: 32px 24px 28px !important;
-        background: ${AMBER} !important;
-      }
-      .hero-label-box  { background: ${BG} !important; color: ${AMBER} !important; }
-      .hero-label-text { color: ${BG} !important; }
-      .hero-h1         { color: ${BG} !important; font-size: 90px !important; }
-      .hero-h1-accent  { color: ${BG} !important; -webkit-text-stroke: 2px ${BG} !important; }
-      .hero-role       { color: rgba(20,18,16,0.55) !important; font-size: 22px !important; }
-      .hero-desc       { color: rgba(20,18,16,0.7) !important; }
-      .hero-stat-num   { color: ${BG} !important; font-size: 44px !important; }
-      .hero-stat-lbl   { color: rgba(20,18,16,0.5) !important; }
-      .hero-stat-div   { border-left-color: rgba(20,18,16,0.2) !important; }
-      .hero-stat-bar   { border-top-color: rgba(20,18,16,0.2) !important; }
-      .hero-right      { display: none !important; }
-
-      .mobile-skill-grid { display: grid !important; }
-
-      .ticker-wrap { background: ${BG} !important; }
-      .ticker-item { color: ${AMBER} !important; }
-
-      .about-grid   { grid-template-columns: 1fr !important; gap: 40px !important; }
-      .work-grid    { grid-template-columns: 1fr !important; }
-      .contact-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
-      .featured-card { grid-template-columns: 1fr !important; grid-column: span 1 !important; }
-      .featured-visual { min-height: 180px !important; }
-      .section-pad { padding: 64px 20px !important; }
-      .work-section { padding: 64px 20px !important; }
-      .footer-inner { flex-direction: column !important; gap: 16px !important; align-items: flex-start !important; }
-      .footer-socials { flex-wrap: wrap !important; gap: 16px !important; }
-
-      .mobile-menu {
-        position: fixed; inset: 0; background: ${AMBER}; z-index: 10000;
-        display: flex; flex-direction: column;
-        padding: 80px 32px 40px;
-        animation: slideIn .3s ease;
-      }
-      .mobile-menu-link {
-        font-size: 72px; letter-spacing: 3px; color: ${BG};
-        border-bottom: 2px solid rgba(20,18,16,0.15); padding: 16px 0;
-        cursor: pointer;
-      }
-    }
-    @media (min-width: 769px) {
-      .mobile-skill-grid { display: none !important; }
-      .hamburger          { display: none !important; }
-      .mobile-menu        { display: none !important; }
-    }
-  `}</style>
-);
-
-/* ── GRAIN OVERLAY (canvas-based, actually works) ───────────── */
-function GrainOverlay() {
-  useEffect(() => {
-    const canvas = document.getElementById("grain-canvas") as HTMLCanvasElement;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const W = 300, H = 300;
-    canvas.width = W;
-    canvas.height = H;
-    function generateGrain() {
-      if (!ctx) return;
-      const img = ctx.createImageData(W, H);
-      for (let i = 0; i < img.data.length; i += 4) {
-        const v = Math.random() * 255 | 0;
-        img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v; img.data[i+3] = 255;
-      }
-      ctx.putImageData(img, 0, 0);
-    }
-    generateGrain();
-    const id = setInterval(generateGrain, 80);
-    return () => clearInterval(id);
-  }, []);
-  return (
-    <canvas id="grain-canvas" style={{
-      position: "fixed", inset: 0, width: "100%", height: "100%",
-      pointerEvents: "none", zIndex: 9998,
-      opacity: 0.06, mixBlendMode: "overlay",
-      animation: "grainShift 0.4s steps(1) infinite",
-      imageRendering: "pixelated",
-    }} />
-  );
-}
-
-/* ── ANIMATED HERO NAME ─────────────────────────────────────── */
-const GLITCH_CHARS = "!@#$%^&*<>{}[]|/\\~";
-const NAME_STATES = [
-  { line1: "SONALI", line2: "NAYAK", isSplit: true },
-  { line1: "@techwarq", line2: "", isSplit: false },
-];
-
-function AnimatedName() {
-  const [stateIdx, setStateIdx] = useState(0);
-  const [displayLine1, setDisplayLine1] = useState(NAME_STATES[0].line1);
-  const [displayLine2, setDisplayLine2] = useState(NAME_STATES[0].line2);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [opacity, setOpacity] = useState(1);
-
-  const scrambleTo = useCallback((targetIdx: number) => {
-    const target = NAME_STATES[targetIdx];
-    const t1 = target.line1;
-    const t2 = target.line2;
-    const totalSteps = 18;
-    let step = 0;
-    setIsAnimating(true);
-
-    const interval = setInterval(() => {
-      step++;
-      const progress = step / totalSteps;
-      // Ease-out curve for smoother resolution
-      const eased = 1 - Math.pow(1 - progress, 2);
-
-      // Build line1: characters resolve left-to-right with easing
-      let l1 = "";
-      for (let i = 0; i < t1.length; i++) {
-        const charThreshold = (i + 0.5) / t1.length;
-        if (eased >= charThreshold) {
-          l1 += t1[i];
-        } else {
-          l1 += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-        }
-      }
-      setDisplayLine1(l1);
-
-      // Build line2
-      if (t2.length > 0) {
-        let l2 = "";
-        for (let i = 0; i < t2.length; i++) {
-          const charThreshold = (i + 0.5) / t2.length;
-          if (eased >= charThreshold) {
-            l2 += t2[i];
-          } else {
-            l2 += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-          }
-        }
-        setDisplayLine2(l2);
-      } else {
-        // Fade out line2 quickly in the first third
-        if (progress < 0.35) {
-          let l2 = "";
-          const fadeLen = Math.max(0, Math.ceil(5 * (1 - progress / 0.35)));
-          for (let i = 0; i < fadeLen; i++) {
-            l2 += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-          }
-          setDisplayLine2(l2);
-        } else {
-          setDisplayLine2("");
-        }
-      }
-
-      // Smooth opacity pulse during transition
-      setOpacity(progress < 0.15 ? 0.7 + progress * 2 : 1);
-
-      if (step >= totalSteps) {
-        clearInterval(interval);
-        setDisplayLine1(t1);
-        setDisplayLine2(t2);
-        setStateIdx(targetIdx);
-        setIsAnimating(false);
-        setOpacity(1);
-      }
-    }, 28);
-  }, []);
+export default function Home() {
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (!isAnimating) {
-        const nextIdx = stateIdx === 0 ? 1 : 0;
-        scrambleTo(nextIdx);
-      }
-    }, 2500);
-    return () => clearInterval(timer);
-  }, [stateIdx, isAnimating, scrambleTo]);
+    setMounted(true);
 
-  const current = NAME_STATES[stateIdx];
-  const isHandle = !current.isSplit && !isAnimating;
+    // Disable back navigation as requested ("stay here only")
+    window.history.pushState(null, "", window.location.href);
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   return (
-    <div style={{ position: "relative", minHeight: "220px", marginBottom: 32, display: "flex", alignItems: "flex-start", width: "100%" }} className="hero-name-container">
-      <h1 className="hero-h1" style={{
-        ...disp,
-        fontSize: isHandle ? "clamp(55px,9vw,115px)" : "clamp(65px,11vw,145px)",
-        lineHeight: 0.85, letterSpacing: 2, color: WHITE,
-        textTransform: isHandle ? "lowercase" : "uppercase",
-        transition: "font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        opacity,
-        position: "absolute",
-        top: 0, left: 0,
-        margin: 0,
-        width: "100%",
-        whiteSpace: "nowrap"
-      }}>
-        {displayLine1}
-        {displayLine2 && <><br /><span className="hero-h1-accent" style={{ color: AMBER }}>{displayLine2}</span></>}
-      </h1>
+    <div style={{
+      backgroundColor: "#1a1a1a",
+      minHeight: "100vh",
+      color: "#d4d4d4",
+      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+      padding: "48px 64px",
+      display: "flex",
+      flexDirection: "column",
+      position: "relative"
+    }}>
       <style>{`
-        @media (max-width: 1024px) {
-          .hero-name-container { min-height: 180px; }
+        body {
+          margin: 0;
+          background-color: #1a1a1a;
         }
-        @media (max-width: 768px) {
-          .hero-name-container { min-height: 140px; }
+        .pow-container {
+          max-width: 900px;
         }
-        @media (max-width: 480px) {
-          .hero-name-container { min-height: 110px; }
+        .pow-link {
+          color: #a0a0a0;
+          text-decoration: none;
+          border-bottom: 1px dotted transparent;
+          transition: border-bottom 0.2s, color 0.2s;
+        }
+        .pow-link:hover {
+          color: #d4d4d4;
+          border-bottom: 1px dotted #d4d4d4;
+        }
+        .blink-cursor {
+          animation: blink-animation 1s steps(2, start) infinite;
+          background-color: #666;
+          display: inline-block;
+          width: 2px;
+          height: 16px;
+          vertical-align: middle;
+          margin-right: 2px;
+        }
+        @keyframes blink-animation {
+          to {
+             visibility: hidden;
+          }
+        }
+        .spellcheck-squiggly {
+          text-decoration: underline wavy rgba(255, 60, 60, 0.5);
+          text-underline-offset: 3px;
+        }
+        .video-scroll-container::-webkit-scrollbar {
+          display: none;
+        }
+        .video-scroll-container {
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
+        }
+        .pow-download-btn:hover {
+          background-color: rgba(255,255,255,0.15) !important;
+          transform: translateY(-2px);
+        }
+        .pow-image-tile {
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .pow-image-tile:hover {
+          transform: scale(1.1) translateY(-8px);
+          border-color: rgba(255,255,255,0.3) !important;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+          z-index: 10;
         }
       `}</style>
-    </div>
-  );
-}
 
-/* ── HELPERS ────────────────────────────────────────────────── */
-const Tag = ({ ch, color }: { ch: string; color?: string }) => {
-  const c = color || AMBER;
-  return (
-    <span style={{ ...mono, fontSize: 10, color: GREY, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "3px 10px", letterSpacing: 2, textTransform: "uppercase", cursor: "default", display: "inline-block", transition: "all .2s" }}
-      onMouseEnter={e => { (e.currentTarget as any).style.color = c; (e.currentTarget as any).style.borderColor = c; }}
-      onMouseLeave={e => { (e.currentTarget as any).style.color = GREY; (e.currentTarget as any).style.borderColor = BORDER; }}>
-      {ch}
-    </span>
-  );
-};
-
-const SectionLabel = ({ num, title, accent }: { num: string; title: string; accent?: string }) => {
-  const c = accent || AMBER;
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 48 }}>
-      <span style={{ ...mono, fontSize: 9, color: c, borderWidth: "1px", borderStyle: "solid", borderColor: c, padding: "4px 10px", letterSpacing: 3, textTransform: "uppercase", whiteSpace: "nowrap" }}>{num}</span>
-      <h2 style={{ ...disp, fontSize: "clamp(36px,6vw,56px)", letterSpacing: 4, color: WHITE, lineHeight: 1 }}>{title}</h2>
-      <div style={{ flex: 1, height: 1, background: BORDER, minWidth: 20 }} />
-    </div>
-  );
-};
-
-/* ── TERMINAL ───────────────────────────────────────────────── */
-const LINES = [
-  { text: "$ whoami",                                 color: DIM,     delay: 0    },
-  { text: "> SONALI NAYAK — fullstack developer",        color: AMBER,   delay: 500  },
-  { text: "$ cat stack.txt",                          color: DIM,     delay: 1500 },
-  { text: "> react · next.js · node · typescript",    color: SAGE,    delay: 2200 },
-  { text: "> tailwind · prisma · postgres · redis",   color: SAGE,    delay: 3000 },
-  { text: "$ status",                                 color: DIM,     delay: 3800 },
-  { text: "> 5 yrs · 40+ shipped · available now",    color: TERRA,   delay: 4500 },
-];
-
-function TypewriterLine({ text, color, active }: { text: string; color: string; active: boolean }) {
-  const [display, setDisplay] = useState("");
-  useEffect(() => {
-    let i = 0;
-    const interval = setInterval(() => {
-      setDisplay(text.slice(0, i + 1));
-      i++;
-      if (i >= text.length) clearInterval(interval);
-    }, 30);
-    return () => clearInterval(interval);
-  }, [text]);
-
-  return (
-    <div style={{ ...mono, fontSize: 12, color, lineHeight: 2.1, letterSpacing: 0.5 }}>
-      {display}
-      {active && <span style={{ display: "inline-block", width: 8, height: 14, marginLeft: 4, verticalAlign: "middle", background: AMBER, animation: "blink 1s step-end infinite" }} />}
-    </div>
-  );
-}
-
-function Terminal() {
-  const [shown, setShown] = useState(0);
-  useEffect(() => { LINES.forEach((l, i) => setTimeout(() => setShown(i + 1), l.delay)); }, []);
-  return (
-    <div style={{ background: "#0E0C0A", borderWidth: "1px 1px 1px 3px", borderStyle: "solid", borderColor: `${BORDER} ${BORDER} ${BORDER} ${AMBER}`, padding: 24 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20, paddingBottom: 16, borderWidth: "0 0 1px 0", borderStyle: "solid", borderColor: BORDER }}>
-        <div style={{ width: 11, height: 11, borderRadius: "50%", background: TERRA }} />
-        <div style={{ width: 11, height: 11, borderRadius: "50%", background: AMBER, opacity: 0.7 }} />
-        <div style={{ width: 11, height: 11, borderRadius: "50%", background: SAGE, opacity: 0.7 }} />
-        <span style={{ ...mono, fontSize: 10, color: DIM, marginLeft: 12, letterSpacing: 2, textTransform: "uppercase" }}>bash — portfolio.sh</span>
-      </div>
-      {LINES.slice(0, shown).map((l, i) => (
-        <TypewriterLine key={i} text={l.text} color={l.color} active={i === shown - 1} />
-      ))}
-    </div>
-  );
-}
-
-/* ── TICKER ─────────────────────────────────────────────────── */
-const TECH = ["REACT","NEXT.JS","NODE.JS","TYPESCRIPT","POSTGRESQL","REDIS","GRAPHQL","DOCKER","AWS","PRISMA","TAILWIND","VITEST"];
-function Ticker() {
-  const items = [...TECH, ...TECH];
-  return (
-    <div className="ticker-wrap" style={{ background: AMBER, overflow: "hidden", padding: "11px 0", borderTop: `1px solid ${BG}`, borderBottom: `1px solid ${BG}` }}>
-      <div style={{ display: "flex", animation: "ticker 20s linear infinite", whiteSpace: "nowrap" }}>
-        {items.map((t, i) => (
-          <span key={i} className="ticker-item" style={{ ...disp, fontSize: 13, color: BG, padding: "0 32px", letterSpacing: 4, opacity: i % 2 === 0 ? 1 : 0.55 }}>
-            {t} <span style={{ opacity: 0.3 }}>//</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── MOBILE SKILL GRID ──────────────────────────────────────── */
-const SKILL_TILES = [
-  { label: "REACT",      icon: "⬡", accent: TERRA },
-  { label: "NEXT.JS",    icon: "▲", accent: BG    },
-  { label: "NODE.JS",    icon: "◉", accent: TERRA },
-  { label: "TYPESCRIPT", icon: "◈", accent: BG    },
-  { label: "POSTGRES",   icon: "⬢", accent: TERRA },
-  { label: "REDIS",      icon: "◆", accent: BG    },
-  { label: "GRAPHQL",    icon: "⟁", accent: TERRA },
-  { label: "DOCKER",     icon: "▣", accent: BG    },
-  { label: "AWS",        icon: "○", accent: TERRA },
-  { label: "TAILWIND",   icon: "△", accent: BG    },
-];
-
-function MobileSkillGrid() {
-  return (
-    <div className="mobile-skill-grid"
-      style={{ display: "none", gridTemplateColumns: "1fr 1fr", gap: 2, background: BG, border: `2px solid ${BG}`, margin: "0 -24px" }}>
-      {SKILL_TILES.map((tile, i) => (
-        <div key={tile.label} style={{
-          background: tile.accent === BG ? BG : AMBER,
-          padding: "20px 18px",
-          borderBottom: `2px solid ${BG}`,
-          borderRight: i % 2 === 0 ? `2px solid ${BG}` : "none",
+      <div className="pow-container">
+        <h1 style={{
+          fontSize: "26px",
+          fontWeight: "700",
+          marginBottom: "32px",
+          color: "#ffffff",
+          letterSpacing: "-0.5px"
         }}>
-          <div style={{ ...mono, fontSize: 9, color: tile.accent === BG ? AMBER : BG, letterSpacing: 2, textTransform: "uppercase", marginBottom: 14, opacity: 0.75 }}>{tile.label}</div>
-          <div style={{ ...disp, fontSize: 52, color: tile.accent === BG ? AMBER : BG, lineHeight: 1, opacity: 0.85 }}>{tile.icon}</div>
-        </div>
-      ))}
-      <div style={{ background: TERRA, padding: "20px 18px", gridColumn: "span 2", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ ...mono, fontSize: 10, color: WHITE, letterSpacing: 2, textTransform: "uppercase" }}>// AVAILABLE FOR WORK</span>
-        <span style={{ ...disp, fontSize: 22, color: WHITE }}>→</span>
-      </div>
-    </div>
-  );
-}
+          proof of work
+        </h1>
 
-/* ── PROJECT CARDS ──────────────────────────────────────────── */
-interface Project {
-  num: string;
-  featured?: boolean;
-  title: string;
-  type: string;
-  desc: string;
-  stack: string[];
-  metric: {
-    val: string;
-    label: string;
-  };
-  accent?: string;
-}
-
-const PROJECTS: Project[] = [
-  { num: "001", featured: true,
-    title: "NEXUS PLATFORM", type: "Full-Stack Application",
-    desc: "Real-time collaboration platform — live cursors, CRDT sync, E2E encryption. Scaled to 10k+ concurrent users.",
-    stack: ["Next.js", "WebSockets", "Redis", "Prisma", "TypeScript"],
-    metric: { val: "10k+", label: "concurrent users" }, accent: AMBER },
-  { num: "002",
-    title: "CORE API", type: "Backend / Infrastructure",
-    desc: "High-throughput REST & GraphQL API at 2M+ req/day. Custom rate limiting, distributed tracing, full observability.",
-    stack: ["Node.js", "GraphQL", "PostgreSQL", "Grafana"],
-    metric: { val: "2M+", label: "req / day" }, accent: TERRA },
-  { num: "003",
-    title: "SHIFT DASHBOARD", type: "Frontend / Data Viz",
-    desc: "Analytics dashboard — 30+ chart types, SSR data fetching, pixel-perfect dark mode built from scratch in 3 weeks.",
-    stack: ["React", "Recharts", "Tailwind", "Zustand"],
-    metric: { val: "30+", label: "chart types" }, accent: SAGE },
-  { num: "004",
-    title: "AUTH ENGINE", type: "Open-Source Library",
-    desc: "Zero-dependency auth toolkit — JWT, OAuth2, magic links, TOTP. 800+ GitHub stars, used in 200+ projects.",
-    stack: ["TypeScript", "JWT", "OAuth2", "NPM"],
-    metric: { val: "800+", label: "GitHub stars" }, accent: AMBER },
-];
-
-function ProjectCard({ p }: { p: Project }) {
-  const [hov, setHov] = useState(false);
-  const ac = p.accent || AMBER;
-  const hS = hov ? { borderColor: ac, transform: "translate(-3px,-3px)", boxShadow: `5px 5px 0 ${ac}` } : {};
-
-  if (p.featured) return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      className="featured-card"
-      style={{ gridColumn: "span 2", display: "grid", gridTemplateColumns: "1fr 1fr", background: CARD, 
-        borderWidth: "1px", borderStyle: "solid", borderColor: BORDER,
-        transition: "all .25s", cursor: "crosshair", ...hS }}>
-      <div className="featured-visual" style={{ borderWidth: "0 1px 0 0", borderStyle: "solid", borderColor: BORDER, minHeight: 280, display: "flex", alignItems: "center", justifyContent: "center", background: "#0E0C0A", position: "relative", overflow: "hidden" }}>
-        {/* retro stripe accent */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 6, display: "flex" }}>
-          <div style={{ flex: 1, background: AMBER }} />
-          <div style={{ flex: 1, background: TERRA }} />
-          <div style={{ flex: 1, background: SAGE }} />
-        </div>
-        <span style={{ ...disp, fontSize: 110, color: AMBER, opacity: hov ? 0.1 : 0.04, position: "absolute", letterSpacing: 8, transition: "opacity .4s", userSelect: "none" }}>FEAT</span>
-        <span style={{ ...disp, fontSize: 90, color: AMBER, opacity: 0.3, position: "relative", zIndex: 1 }}>◈</span>
-      </div>
-      <div style={{ padding: "44px 40px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-        <div>
-          <span style={{ ...mono, fontSize: 9, color: ac, letterSpacing: 3, textTransform: "uppercase", display: "block", marginBottom: 12 }}>PROJECT {p.num} — FEATURED</span>
-          <div style={{ ...disp, fontSize: "clamp(32px,4vw,46px)", letterSpacing: 2, color: WHITE, lineHeight: 1, marginBottom: 10 }}>{p.title}</div>
-          <div style={{ ...mono, fontSize: 10, color: GREY, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ width: 20, height: 1, background: ac, display: "inline-block" }} />{p.type}
-          </div>
-          <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 1.9, marginBottom: 18 }}>{p.desc}</p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{p.stack.map(s => <Tag key={s} ch={s} color={ac} />)}</div>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER, paddingTop: 18, marginTop: 24 }}>
-          <div>
-            <span style={{ ...disp, fontSize: 38, color: ac, lineHeight: 1 }}>{p.metric.val}</span>
-            <span style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 2, textTransform: "uppercase", marginLeft: 8 }}>{p.metric.label}</span>
-          </div>
-          <a href="#" style={{ ...mono, fontSize: 10, color: ac, textDecoration: "none", letterSpacing: 2, textTransform: "uppercase" }}>VIEW →</a>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "36px 30px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden", cursor: "crosshair", transition: "all .25s", ...hS }}>
-      <div style={{ position: "absolute", top: 0, left: 0, height: 3, background: ac, width: hov ? "100%" : 0, transition: "width .4s ease" }} />
-      <div>
-        <span style={{ ...mono, fontSize: 9, color: ac, letterSpacing: 3, textTransform: "uppercase", display: "block", marginBottom: 16 }}>PROJECT {p.num}</span>
-        <div style={{ ...disp, fontSize: "clamp(28px,3.5vw,38px)", letterSpacing: 2, color: WHITE, lineHeight: 1, marginBottom: 8 }}>{p.title}</div>
-        <div style={{ ...mono, fontSize: 10, color: GREY, letterSpacing: 2, textTransform: "uppercase", marginBottom: 14, display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ width: 16, height: 1, background: ac, display: "inline-block" }} />{p.type}
-        </div>
-        <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 1.9, marginBottom: 16 }}>{p.desc}</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{p.stack.map(s => <Tag key={s} ch={s} color={ac} />)}</div>
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER, paddingTop: 16, marginTop: 20 }}>
-        <div>
-          <span style={{ ...disp, fontSize: 30, color: ac, lineHeight: 1 }}>{p.metric.val}</span>
-          <span style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 2, textTransform: "uppercase", marginLeft: 8 }}>{p.metric.label}</span>
-        </div>
-        <a href="#" style={{ ...mono, fontSize: 10, color: ac, textDecoration: "none", letterSpacing: 2, textTransform: "uppercase" }}>VIEW →</a>
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   MAIN APP
-═══════════════════════════════════════════════════════════ */
-export default function Portfolio() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", msg: "" });
-  const scrollTo = (id: string) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setMenuOpen(false); };
-
-  return (
-    <div style={{ background: BG, minHeight: "100vh", color: WHITE, ...mono }}>
-      <GlobalStyles />
-      <GrainOverlay />
-      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9997,
-        background: "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px)" }} />
-
-      {/* ── MOBILE MENU ──────────────────────────────────────── */}
-      {menuOpen && (
-        <div className="mobile-menu">
-          <button onClick={() => setMenuOpen(false)}
-            style={{ ...mono, position: "absolute", top: 22, right: 24, background: "none", border: "none", color: BG as any, fontSize: 28, cursor: "pointer" }}>✕</button>
-          <div style={{ ...mono, fontSize: 9, color: "rgba(20,18,16,0.5)", letterSpacing: 3, textTransform: "uppercase", marginBottom: 32 }}>// NAVIGATE</div>
-          {[["about","About"],["work","Work"],["contact","Contact"]].map(([id, label]) => (
-            <div key={id} className="mobile-menu-link" style={{ ...disp }} onClick={() => scrollTo(id)}>{label}</div>
-          ))}
-          <div style={{ marginTop: "auto", ...mono, fontSize: 10, color: "rgba(20,18,16,0.55)", letterSpacing: 2, textTransform: "uppercase" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: BG, animation: "pulse 2s infinite" }} />
-              AVAILABLE FOR WORK
+        <ul style={{
+          paddingLeft: "28px",
+          marginBottom: "48px",
+          lineHeight: "1.8",
+          fontSize: "15px",
+          listStyleType: "disc",
+          color: "#d4d4d4"
+        }}>
+          <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+            been working on an AI <span className="spellcheck-squiggly">ugc</span> agent — <span style={{ color: "#a0a0a0" }}>live on the platform right now</span> <br />
+            link→ <a href="https://nagent.ai/dashboard/ugc" className="pow-link" target="_blank" rel="noopener noreferrer">
+              https://nagent.ai/dashboard/ugc
+            </a> <br />
+            anyone can drop a script or product link and generate high-fidelity <span className="spellcheck-squiggly">ugc</span> videos from scratch. <br />
+            here are some outcomes.
+          </li>
+          <li style={{ paddingLeft: "8px" }}>
+            behind the scenes: designed a highly resilient, 5-stage multi-modal pipeline <br />
+            abstracting away the complexity of handling long-running ai tasks.<br />
+            <div style={{ color: "#a0a0a0", fontSize: "14px", paddingLeft: "12px", borderLeft: "2px solid rgba(255,255,255,0.1)", marginTop: "12px", marginBottom: "8px" }}>
+              <span style={{ color: "#d4d4d4" }}>1. intelligent ingestion:</span> mistral ocr + gemini flash to structure messy text into a json storyline.<br />
+              <span style={{ color: "#d4d4d4" }}>2. keyframe generation:</span> dynamic base frame rendering for visual continuity.<br />
+              <span style={{ color: "#d4d4d4" }}>3. orchestration:</span> dense context injection to build veo 3.1 video generation prompts.<br />
+              <span style={{ color: "#d4d4d4" }}>4. async video rendering:</span> concurrent 8-second clip generation with persistent seed tracking.<br />
+              <span style={{ color: "#d4d4d4" }}>5. final stitching:</span> ffmpeg clip merging & voice-over syncing via cloud queues.
             </div>
-            hello@sonalinayak.dev
-          </div>
-        </div>
-      )}
+          </li>
+        </ul>
 
-      {/* ── NAV ──────────────────────────────────────────────── */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "18px 32px", borderBottom: `1px solid ${BORDER}`,
-        background: "rgba(20,18,16,0.97)", backdropFilter: "blur(12px)" }}>
-        <div>
-          <div style={{ ...disp, fontSize: 24, color: AMBER, letterSpacing: 3 }}>SONALI NAYAK</div>
-          <div style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 3, textTransform: "uppercase" }}>// fullstack dev</div>
-        </div>
-        <div className="desktop-nav-links" style={{ display: "flex", gap: 40 }}>
-          {[["about","About"],["work","Work"],["contact","Contact"]].map(([id, label]) => (
-            <button key={id} onClick={() => scrollTo(id)}
-              style={{ ...mono, background: "none", border: "none", color: GREY, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", transition: "color .2s" }}
-              onMouseEnter={e => (e.currentTarget as any).style.color = WHITE}
-              onMouseLeave={e => (e.currentTarget as any).style.color = GREY}>
-              {label}
-            </button>
+        {/* Video Area */}
+        <div className="video-scroll-container" style={{
+          marginTop: "40px",
+          display: "flex",
+          gap: "24px",
+          overflowX: "auto",
+          paddingBottom: "16px",
+          width: "calc(100vw - 64px)", /* Account for container padding */
+          marginRight: "-64px" /* Bleed off right edge */
+        }}>
+          {mounted && [
+            "/final-ugc-1775016828920-528968ac-aff1-43a2-bc0f-aaa62f8b8ad8 (1).mp4",
+            "/ugc-video (5).mp4",
+            "/final-ugc-1775019503338-e9f3798b-1782-4d2b-9c29-d917b595f73c.mp4"
+          ].map((src, idx) => (
+            <div key={idx} style={{
+              flex: "0 0 auto",
+              position: "relative",
+              width: "280px",
+              borderRadius: "24px",
+              overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.05)",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+              backgroundColor: "#000"
+            }}>
+              <video
+                autoPlay
+                loop
+                controls
+                playsInline
+                style={{
+                  display: "block",
+                  width: "100%",
+                  aspectRatio: "9/16",
+                  objectFit: "cover"
+                }}
+              >
+                <source src={src} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+
+              {/* Download Button */}
+              <a
+                href={src}
+                download
+                className="pow-download-btn"
+                style={{
+                  position: "absolute",
+                  top: "16px", /* Positioned at top to avoid native video controls */
+                  right: "16px",
+                  backgroundColor: "rgba(0,0,0,0.6)",
+                  backdropFilter: "blur(4px)",
+                  WebkitBackdropFilter: "blur(4px)",
+                  color: "#fff",
+                  padding: "8px 12px",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download
+              </a>
+            </div>
           ))}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div className="desktop-nav-links" style={{ display: "flex", alignItems: "center", gap: 8, ...mono, fontSize: 10, color: GREY, letterSpacing: 2, textTransform: "uppercase" }}>
-            <div style={{ width: 7, height: 7, borderRadius: "50%", background: SAGE, animation: "pulse 2s infinite" }} />
-            Available
-          </div>
-          <button className="hamburger" onClick={() => setMenuOpen(true)}
-            style={{ display: "none", flexDirection: "column", gap: 5, background: "none", border: "none", cursor: "pointer", padding: 4 }}>
-            <span style={{ display: "block", width: 24, height: 2, background: AMBER }} />
-            <span style={{ display: "block", width: 24, height: 2, background: AMBER }} />
-            <span style={{ display: "block", width: 16, height: 2, background: AMBER }} />
-          </button>
-        </div>
-      </nav>
 
-      {/* ── HERO ─────────────────────────────────────────────── */}
-      <section className="hero-section" style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr", paddingTop: 80, borderBottom: `1px solid ${BORDER}` }}>
-        <div className="hero-left" style={{ padding: "72px 48px", display: "flex", flexDirection: "column", justifyContent: "space-between", borderRight: `1px solid ${BORDER}` }}>
-          <div>
-            <div style={{ ...mono, fontSize: 9, letterSpacing: 3, textTransform: "uppercase", marginBottom: 32 }}>
-              <span className="hero-label-box" style={{ background: AMBER, color: BG, padding: "3px 10px", marginRight: 12, fontWeight: 700 }}>01</span>
-              <span className="hero-label-text" style={{ color: AMBER }}>DEVELOPER PORTFOLIO</span>
-            </div>
-            <AnimatedName />
-            <div className="hero-role" style={{ ...disp, fontSize: "clamp(22px,3vw,44px)", color: GREY, letterSpacing: 5, marginBottom: 36 }}>
-              FULLSTACK DEVELOPER
-            </div>
-            <p className="hero-desc" style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 2, maxWidth: 440 }}>
-              I build fast, scalable, maintainable software — from pixel-perfect frontends to distributed backend systems. Every layer, end to end.
-            </p>
-            <div style={{ marginTop: 32 }}>
-              <MobileSkillGrid />
-            </div>
-          </div>
-          {/* stats */}
-          <div className="hero-stat-bar" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", borderTop: `1px solid ${BORDER}`, paddingTop: 32, marginTop: 48 }}>
-            {[["5+","Yrs Exp", AMBER],["40+","Projects", TERRA],["20+","Clients", SAGE]].map(([n, l, c], i) => (
-              <div key={l} className={i > 0 ? "hero-stat-div" : ""}
-                style={{ paddingLeft: i > 0 ? 24 : 0, paddingRight: 24, borderLeft: i > 0 ? `1px solid ${BORDER}` : "none" }}>
-                <div className="hero-stat-num" style={{ ...disp, fontSize: 52, color: c, lineHeight: 1 }}>{n}</div>
-                <div className="hero-stat-lbl" style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>{l}</div>
+        {/* --- VIRTUAL PHOTOSHOOT SECTION --- */}
+        <div style={{ marginTop: "80px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            virtual photoshoot agent
+          </h1>
+
+          <ul style={{
+            paddingLeft: "28px",
+            marginBottom: "48px",
+            lineHeight: "1.8",
+            fontSize: "15px",
+            listStyleType: "disc",
+            color: "#d4d4d4"
+          }}>
+            <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+              built an AI <span className="spellcheck-squiggly">virtual photoshoot</span> agent — <span style={{ color: "#a0a0a0" }}>live on the platform</span> <br />
+              link→ <a href="https://nagent.ai/dashboard/virtual-photoshoot-agent" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://nagent.ai/dashboard/virtual-photoshoot-agent
+              </a> <br />
+              standard brand shoots are slow and expensive. this agent automates the entire photoshoot lifecycle—eliminating the need for studios and manual prompt engineering to produce studio-quality imagery <span style={{ color: "#fff", fontWeight: "600" }}>at massive scale</span>. <br />
+              here is the underlying pipeline.
+            </li>
+            <li style={{ paddingLeft: "8px" }}>
+              behind the scenes: built a modular inference engine using ndjson streaming and heartbeat pings to bypass timeout limits on long-running AI models.<br />
+              <div style={{ color: "#a0a0a0", fontSize: "14px", paddingLeft: "12px", borderLeft: "2px solid rgba(255,255,255,0.1)", marginTop: "12px", marginBottom: "8px" }}>
+                <span style={{ color: "#d4d4d4" }}>1. asset ingestion:</span> multi-vector upload (binary/data-uri/arrays) to cloud storage.<br />
+                <span style={{ color: "#d4d4d4" }}>2. avatar generation:</span> ndjson streaming to handle high-fidelity model inference in real-time.<br />
+                <span style={{ color: "#d4d4d4" }}>3. virtual try-on:</span> garment mapping with heartbeat flushes to prevent load-balancer timeouts.<br />
+                <span style={{ color: "#d4d4d4" }}>4. pose manipulation:</span> structural mapping via visual references and text prompts.<br />
+                <span style={{ color: "#d4d4d4" }}>5. asset delivery:</span> dynamic accessory compositing and automated .zip compilation for batch exports.
               </div>
-            ))}
-          </div>
-        </div>
+            </li>
+          </ul>
 
-        {/* RIGHT — desktop */}
-        <div className="hero-right" style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ flex: 1, padding: "56px 44px", borderBottom: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ ...mono, fontSize: 9, color: AMBER, letterSpacing: 3, textTransform: "uppercase", marginBottom: 16 }}>// LIVE TERMINAL</div>
-            <Terminal />
+          <div className="video-scroll-container" style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "24px",
+            marginTop: "40px",
+            overflowX: "auto",
+            paddingBottom: "16px",
+            width: "calc(100vw - 64px)",
+            marginRight: "-64px",
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+          }}>
+            {/* Avatars Box */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "fit-content",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>01. avatars</span>
+              <div style={{ display: "flex", gap: "12px" }}>
+                {["/avatar2.jpg", "/avatar3.jpg", "/avatr.jpg"].map((src, idx) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img key={idx} src={src} alt={`avatar ${idx + 1}`} className="pow-image-tile" style={{
+                    width: "80px",
+                    aspectRatio: "9/16",
+                    objectFit: "cover",
+                    backgroundColor: "#111",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    display: "block"
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ color: "#444", fontSize: "20px", fontWeight: "300" }}>→</div>
+
+            {/* Try-On Box */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "fit-content",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>02. try-on</span>
+              <div style={{ display: "flex", gap: "12px" }}>
+                {["/result_0_1775473210676.jpg", "/result_1_1775473213552.jpg", "/result_2_1775473215635.jpg"].map((src, idx) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img key={idx} src={src} alt={`try-on ${idx + 1}`} className="pow-image-tile" style={{
+                    width: "80px",
+                    aspectRatio: "9/16",
+                    objectFit: "cover",
+                    backgroundColor: "#111",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    display: "block"
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ color: "#444", fontSize: "20px", fontWeight: "300" }}>→</div>
+
+            {/* Poses Box */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "fit-content",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>03. poses</span>
+              <div style={{ display: "flex", gap: "12px" }}>
+                {["/pose.jpg", "/pose2.jpg", "/pose3.jpg"].map((src, idx) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img key={idx} src={src} alt={`pose ${idx + 1}`} className="pow-image-tile" style={{
+                    width: "80px",
+                    aspectRatio: "9/16",
+                    objectFit: "cover",
+                    backgroundColor: "#111",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    display: "block"
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ color: "#444", fontSize: "20px", fontWeight: "300" }}>→</div>
+
+            {/* Accessories Box */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "fit-content",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>04. finalize</span>
+              <div style={{ display: "flex", gap: "12px" }}>
+                {["/result_0_1775472856839.jpg"].map((src, idx) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img key={idx} src={src} alt={`accessory ${idx + 1}`} className="pow-image-tile" style={{
+                    width: "80px",
+                    aspectRatio: "9/16",
+                    objectFit: "cover",
+                    backgroundColor: "#111",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    display: "block"
+                  }} />
+                ))}
+              </div>
+            </div>
           </div>
-          <div style={{ padding: 44 }}>
-            <div style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 3, textTransform: "uppercase", marginBottom: 10 }}>// READY TO BUILD?</div>
-            <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 1.9, marginBottom: 24 }}>
-              Open to full-time roles, contracts, and interesting freelance projects.
-            </p>
-            <div style={{ display: "flex", gap: 14 }}>
-              {[{ label: "VIEW WORK →", id: "work", bg: AMBER, fg: BG },
-                { label: "GET IN TOUCH", id: "contact", bg: "none", fg: WHITE, border: BORDER }].map(btn => (
-                <button key={btn.label} onClick={() => scrollTo(btn.id)}
-                  style={{ ...mono, background: btn.bg, color: btn.fg, 
-                    borderWidth: btn.border ? "1px" : "0px",
-                    borderStyle: btn.border ? "solid" : "none",
-                    borderColor: btn.border || "transparent",
-                    padding: "14px 28px", fontSize: 11, letterSpacing: 2, textTransform: "uppercase",
-                    fontWeight: btn.bg !== "none" ? 700 : 400, cursor: "pointer", transition: "all .2s" }}
-                  onMouseEnter={e => { (e.currentTarget as any).style.transform = "translate(-2px,-2px)"; (e.currentTarget as any).style.boxShadow = `4px 4px 0 ${BORDER2}`;
-                    if (btn.border) { (e.currentTarget as any).style.borderColor = AMBER; (e.currentTarget as any).style.color = AMBER; }}}
-                  onMouseLeave={e => { (e.currentTarget as any).style.transform = "none"; (e.currentTarget as any).style.boxShadow = "none";
-                    if (btn.border) { (e.currentTarget as any).style.borderColor = BORDER; (e.currentTarget as any).style.color = WHITE; }}}>
-                  {btn.label}
-                </button>
+
+          <div style={{ marginTop: "64px" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "24px" }}>
+              <h3 style={{ fontSize: "18px", color: "#fff", margin: 0 }}>final outcomes</h3>
+              <span style={{ fontSize: "13px", color: "#666" }}>studio-quality results delivered in batch</span>
+            </div>
+            
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
+              gap: "24px" 
+            }}>
+              {["/result_0_1775473210676.jpg", "/result_1_1775473213552.jpg", "/result_2_1775473215635.jpg", "/result_0_1775472856839.jpg"].map((src, idx) => (
+                <div key={idx} style={{
+                   borderRadius: "24px",
+                   overflow: "hidden",
+                   border: "1px solid rgba(255,255,255,0.05)",
+                   boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
+                   backgroundColor: "#000",
+                   position: "relative"
+                }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt={`outcome ${idx + 1}`} style={{
+                    width: "100%",
+                    aspectRatio: "9/16",
+                    objectFit: "cover",
+                    display: "block"
+                  }} />
+                  <div style={{
+                    position: "absolute",
+                    bottom: "16px",
+                    left: "16px",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    backdropFilter: "blur(4px)",
+                    borderRadius: "8px",
+                    padding: "4px 10px",
+                    fontSize: "11px",
+                    color: "#fff",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px"
+                  }}>
+                    vps-render-{idx + 1}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </div>
-      </section>
 
-      <Ticker />
+        {/* --- ENTERPRISE CAMPAIGN HUB SECTION --- */}
+        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            enterprise campaign hub & bulk ai orchestrator
+          </h1>
 
-      {/* ── ABOUT ────────────────────────────────────────────── */}
-      <section id="about" className="section-pad about-grid"
-        style={{ padding: "100px 48px", borderBottom: `1px solid ${BORDER}`, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72 }}>
-        <div>
-          <SectionLabel num="02" title="ABOUT" accent={AMBER} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 18, marginBottom: 52 }}>
-            <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 2 }}>
-              <span style={{ color: WHITE, fontWeight: 700 }}>I&apos;m a fullstack developer</span> obsessed with the craft of writing clean, purposeful code. I care as much about the architecture beneath as the interface above.
-            </p>
-            <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 2 }}>
-              My sweet spot is <span style={{ color: WHITE, fontWeight: 700 }}>React + Node</span> ecosystems — component systems, APIs that scale, deploys that stay boring.
-            </p>
-            <p style={{ ...mono, fontSize: 12, color: GREY, lineHeight: 2 }}>
-              When I&apos;m not coding I&apos;m contributing to open source, reading RFCs, or thinking too hard about <span style={{ color: WHITE, fontWeight: 700 }}>data modelling</span>.
-            </p>
-          </div>
-          <div style={{ ...mono, fontSize: 9, color: AMBER, letterSpacing: 3, textTransform: "uppercase", marginBottom: 20 }}>// EXPERIENCE</div>
-          {[
-            { role: "Senior Engineer", co: "ACME Corp",  period: "2023 — NOW",  c: AMBER },
-            { role: "Frontend Lead",   co: "StartupXYZ", period: "2021 — 2023", c: TERRA },
-            { role: "Dev / Freelance", co: "Self",        period: "2019 — 2021", c: SAGE  },
-          ].map(e => (
-            <div key={e.co} style={{ display: "flex", justifyContent: "space-between", padding: "18px 0", borderTop: `1px solid ${BORDER}` }}>
-              <div>
-                <div style={{ ...mono, fontSize: 13, color: WHITE, textTransform: "uppercase", letterSpacing: 1 }}>{e.role}</div>
-                <div style={{ ...mono, fontSize: 10, color: e.c, letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>{e.co}</div>
+          <ul style={{
+            paddingLeft: "28px",
+            marginBottom: "48px",
+            lineHeight: "1.8",
+            fontSize: "15px",
+            listStyleType: "disc",
+            color: "#d4d4d4"
+          }}>
+            <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+              built an <span className="spellcheck-squiggly">enterprise campaign</span> hub — <span style={{ color: "#a0a0a0" }}>live for bulk advertisers</span> <br />
+              link→ <a href="https://nagent.ai/dashboard/campaign-hub" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://nagent.ai/dashboard/campaign-hub
+              </a> <br />
+              managing marketing across hundreds of SKUs is a manual bottleneck. this engine synchronizes with Google Sheets to autonomously generate copy, images, and metadata <span style={{ color: "#fff", fontWeight: "600" }}>in bulk</span>. <br />
+              here is the practical flow.
+            </li>
+            <li style={{ paddingLeft: "8px" }}>
+              behind the scenes: engineered a "Fan-Out" system that takes one sheet and splits it into thousands of individual AI tasks.<br />
+              <div style={{ color: "#a0a0a0", fontSize: "14px", paddingLeft: "12px", borderLeft: "2px solid rgba(255,255,255,0.1)", marginTop: "12px", marginBottom: "8px" }}>
+                <span style={{ color: "#d4d4d4" }}>1. google sheet connection:</span> users link their source data; the system instantly caches it in Redis for zero-latency access.<br />
+                <span style={{ color: "#d4d4d4" }}>2. intelligent generation:</span> the AI reads product specs and brand objectives to draft custom notification copy and ad creatives.<br />
+                <span style={{ color: "#d4d4d4" }}>3. smart orchestration (BullMQ):</span> think of this as a "mega to-do list" that manages specialized workers to ensure no task is dropped.<br />
+                <span style={{ color: "#d4d4d4" }}>4. real-time write-back:</span> as each ad is ready, it's synced back to the original sheet so the user sees progress live.<br />
+                <span style={{ color: "#d4d4d4" }}>5. scaling at zero cost:</span> handles 1,000+ SKUs concurrently without hitting rate limits or crashing the browser.
               </div>
-              <div style={{ ...mono, fontSize: 10, color: DIM, letterSpacing: 1, textTransform: "uppercase" }}>{e.period}</div>
-            </div>
-          ))}
-        </div>
+            </li>
+          </ul>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {[
-            { label: "FRONTEND", accent: AMBER, tags: ["React","Next.js","TypeScript","Tailwind","Framer Motion","Zustand","React Query"] },
-            { label: "BACKEND",  accent: TERRA, tags: ["Node.js","Express","Fastify","GraphQL","REST","WebSockets","tRPC"] },
-            { label: "DATA",     accent: SAGE,  tags: ["PostgreSQL","Redis","Prisma","Drizzle","MongoDB","Elasticsearch"] },
-            { label: "INFRA",    accent: AMBER, tags: ["Docker","AWS","Vercel","CI/CD","Vitest","Playwright","Turborepo"] },
-          ].map(block => (
-            <div key={block.label}
-              style={{ background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "20px 22px", transition: "border-color .2s, box-shadow .2s", cursor: "crosshair" }}
-              onMouseEnter={e => { (e.currentTarget as any).style.borderColor = block.accent; (e.currentTarget as any).style.boxShadow = `3px 3px 0 ${block.accent}`; }}
-              onMouseLeave={e => { (e.currentTarget as any).style.borderColor = BORDER; (e.currentTarget as any).style.boxShadow = "none"; }}>
-              <div style={{ ...mono, fontSize: 9, color: block.accent, letterSpacing: 3, textTransform: "uppercase", marginBottom: 12 }}>// {block.label}</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{block.tags.map(t => <Tag key={t} ch={t} color={block.accent} />)}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── WORK ─────────────────────────────────────────────── */}
-      <section id="work" className="work-section" style={{ padding: "100px 48px", borderWidth: "0 0 1px 0", borderStyle: "solid", borderColor: BORDER }}>
-        <SectionLabel num="03" title="SELECTED WORK" accent={TERRA} />
-        <div className="work-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, background: BORDER }}>
-          {PROJECTS.map(p => <ProjectCard key={p.num} p={p} />)}
-        </div>
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 20 }}>
-          <a href="#"
-            style={{ ...mono, fontSize: 11, color: GREY, letterSpacing: 2, textTransform: "uppercase", textDecoration: "none", borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, padding: "12px 24px", transition: "all .2s" }}
-            onMouseEnter={e => { (e.currentTarget as any).style.color = AMBER; (e.currentTarget as any).style.borderColor = AMBER; }}
-            onMouseLeave={e => { (e.currentTarget as any).style.color = GREY;  (e.currentTarget as any).style.borderColor = BORDER; }}>
-            ALL PROJECTS →
-          </a>
-        </div>
-      </section>
-
-      {/* ── CONTACT ──────────────────────────────────────────── */}
-      <section id="contact" className="section-pad contact-grid"
-        style={{ padding: "100px 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72 }}>
-        <div>
-          <SectionLabel num="04" title="CONTACT" accent={SAGE} />
-          <div style={{ ...disp, fontSize: "clamp(52px,7vw,108px)", lineHeight: 0.9, letterSpacing: 2, color: WHITE, marginBottom: 48 }}>
-            LET&apos;S<br />BUILD<br /><span style={{ color: AMBER }}>SOMETHING.</span>
-          </div>
-          {/* retro 3-stripe bar */}
-          <div style={{ display: "flex", height: 4, marginBottom: 32, gap: 2 }}>
-            <div style={{ flex: 1, background: AMBER }} />
-            <div style={{ flex: 1, background: TERRA }} />
-            <div style={{ flex: 1, background: SAGE }} />
-          </div>
-          <div>
-            {[
-              { label: "EMAIL",    val: "hello@sonalinayak.dev",       href: "mailto:hello@sonalinayak.dev", c: AMBER },
-              { label: "GITHUB",   val: "github.com/sonalinayak",      href: "#",                         c: AMBER },
-              { label: "LINKEDIN", val: "linkedin.com/in/sonalinayak", href: "#",                         c: AMBER },
-              { label: "TWITTER",  val: "@yourhandle",              href: "#",                         c: AMBER },
-              { label: "STATUS",   val: "● AVAILABLE NOW",          special: SAGE },
-            ].map(row => (
-              <div key={row.label} style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 0", borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER }}>
-                <span style={{ ...mono, fontSize: 9, color: row.c || SAGE, letterSpacing: 2, textTransform: "uppercase", width: 76, flexShrink: 0 }}>{row.label}</span>
-                {row.href
-                  ? <a href={row.href} style={{ ...mono, fontSize: 12, color: WHITE, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", transition: "color .2s" }}
-                      onMouseEnter={e => (e.currentTarget as any).style.color = AMBER}
-                      onMouseLeave={e => (e.currentTarget as any).style.color = WHITE}>{row.val}</a>
-                  : <span style={{ ...mono, fontSize: 12, color: row.special || WHITE, letterSpacing: 1, textTransform: "uppercase" }}>{row.val}</span>
-                }
+          {/* Screenshot of the Live Sheet Integration */}
+          <div style={{ 
+            marginBottom: "48px", 
+            borderRadius: "24px", 
+            overflow: "hidden", 
+            border: "1px solid rgba(255,255,255,0.05)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            backgroundColor: "#000"
+          }}>
+            <div style={{ 
+              padding: "12px 20px", 
+              backgroundColor: "rgba(255,255,255,0.03)", 
+              borderBottom: "1px solid rgba(255,255,255,0.05)", 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "10px" 
+            }}>
+              <div style={{ display: "flex", gap: "6px" }}>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ff5f56" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "center" }}>
-          <div style={{ ...mono, fontSize: 9, color: SAGE, letterSpacing: 3, textTransform: "uppercase", marginBottom: 8 }}>// SEND A MESSAGE</div>
-          {[
-            { label: "YOUR NAME",     key: "name",  placeholder: "JOHN DOE",          type: "text",  ac: AMBER },
-            { label: "EMAIL ADDRESS", key: "email", placeholder: "HELLO@COMPANY.COM", type: "email", ac: TERRA },
-          ].map(f => (
-            <div key={f.key} style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              <label style={{ ...mono, fontSize: 9, color: f.ac, letterSpacing: 2, textTransform: "uppercase" }}>{f.label}</label>
-              <input type={f.type} placeholder={f.placeholder} value={form[f.key as keyof typeof form]}
-                onChange={e => setForm({ ...form, [f.key as keyof typeof form]: e.target.value })}
-                style={{ ...mono, background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, color: WHITE, fontSize: 12, letterSpacing: 1, textTransform: "uppercase", padding: "14px 16px", outline: "none", cursor: "text", transition: "border-color .2s", width: "100%" }}
-                onFocus={e => (e.currentTarget as any).style.borderColor = f.ac}
-                onBlur={e => (e.currentTarget as any).style.borderColor = BORDER} />
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>campaign_sync_audit.xlsx</span>
             </div>
-          ))}
-          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-            <label style={{ ...mono, fontSize: 9, color: SAGE, letterSpacing: 2, textTransform: "uppercase" }}>MESSAGE</label>
-            <textarea rows={5} placeholder="TELL ME ABOUT YOUR PROJECT..." value={form.msg}
-              onChange={e => setForm({ ...form, msg: e.target.value })}
-              style={{ ...mono, background: CARD, borderWidth: "1px", borderStyle: "solid", borderColor: BORDER, color: WHITE, fontSize: 12, letterSpacing: 1, textTransform: "uppercase", padding: "14px 16px", outline: "none", resize: "vertical", cursor: "text", transition: "border-color .2s", width: "100%" }}
-              onFocus={e => (e.currentTarget as any).style.borderColor = SAGE}
-              onBlur={e => (e.currentTarget as any).style.borderColor = BORDER} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/campaign-hub-sheet.png" 
+              alt="Campaign Hub Sheet Synchronization" 
+              style={{ 
+                width: "100%", 
+                display: "block",
+                opacity: "0.9",
+                filter: "contrast(1.1)"
+              }} 
+            />
           </div>
-          <button
-            style={{ ...mono, background: AMBER, color: BG, border: "none", padding: 16, fontSize: 11, letterSpacing: 2, textTransform: "uppercase", fontWeight: 700, cursor: "pointer", transition: "all .2s" }}
-            onMouseEnter={e => { (e.currentTarget as any).style.transform = "translate(-2px,-2px)"; (e.currentTarget as any).style.boxShadow = `4px 4px 0 ${TERRA}`; }}
-            onMouseLeave={e => { (e.currentTarget as any).style.transform = "none"; (e.currentTarget as any).style.boxShadow = "none"; }}>
-            SEND MESSAGE →
-          </button>
-        </div>
-      </section>
 
-      {/* ── FOOTER ───────────────────────────────────────────── */}
-      <footer style={{ borderWidth: "1px 0 0 0", borderStyle: "solid", borderColor: BORDER, padding: "24px 32px" }}>
-        {/* retro stripe top */}
-        <div style={{ display: "flex", height: 2, marginBottom: 24, gap: 1 }}>
-          <div style={{ flex: 1, background: AMBER, opacity: 0.4 }} />
-          <div style={{ flex: 1, background: TERRA, opacity: 0.4 }} />
-          <div style={{ flex: 1, background: SAGE,  opacity: 0.4 }} />
-        </div>
-        <div className="footer-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ ...disp, color: AMBER, fontSize: 20, letterSpacing: 3 }}>SONALI NAYAK</div>
-          <div style={{ ...mono, fontSize: 9, color: DIM, letterSpacing: 2, textTransform: "uppercase" }}>© 2026 — ALL RIGHTS RESERVED</div>
-          <div className="footer-socials" style={{ display: "flex", gap: 28 }}>
-            {[["GitHub", AMBER],["Twitter", TERRA],["LinkedIn", SAGE],["Dribbble", AMBER]].map(([s, c]) => (
-              <a key={s} href="#"
-                style={{ ...mono, fontSize: 9, color: DIM, textDecoration: "none", letterSpacing: 2, textTransform: "uppercase", transition: "color .2s" }}
-                onMouseEnter={e => (e.currentTarget as any).style.color = c}
-                onMouseLeave={e => (e.currentTarget as any).style.color = DIM}>{s}</a>
-            ))}
+          <div className="video-scroll-container" style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "24px",
+            marginTop: "40px",
+            overflowX: "auto",
+            paddingBottom: "16px",
+            width: "calc(100vw - 64px)",
+            marginRight: "-64px",
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+          }}>
+            {/* Source Phase */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              backgroundColor: "rgba(255,184,0,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "220px"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>SOURCE</span>
+              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(255,184,0,0.1)", color: "#FFB800", fontSize: "12px" }}>Google Sheets API</div>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(255,184,0,0.1)", color: "#FFB800", fontSize: "12px" }}>Redis Cache Layer</div>
+              </div>
+            </div>
+
+            <div style={{ color: "#444", fontSize: "20px" }}>→</div>
+
+            {/* Queue Phase */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              backgroundColor: "rgba(0,132,255,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "220px"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>ORCHESTRATION</span>
+              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(0,132,255,0.1)", color: "#0084FF", fontSize: "12px" }}>BullMQ Distributed Queues</div>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(0,132,255,0.1)", color: "#0084FF", fontSize: "12px" }}>Job Segregation (P0/P1)</div>
+              </div>
+            </div>
+
+            <div style={{ color: "#444", fontSize: "20px" }}>→</div>
+
+            {/* Worker Phase */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              backgroundColor: "rgba(187,38,255,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "220px"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>WORKERS (AI)</span>
+              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(187,38,255,0.1)", color: "#BB26FF", fontSize: "12px" }}>Content Generator</div>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(187,38,255,0.1)", color: "#BB26FF", fontSize: "12px" }}>Image Engine</div>
+              </div>
+            </div>
+
+            <div style={{ color: "#444", fontSize: "20px" }}>→</div>
+
+            {/* Sink Phase */}
+            <div style={{
+              border: "1px dashed rgba(255,255,255,0.15)",
+              borderRadius: "20px",
+              padding: "20px",
+              backgroundColor: "rgba(0,255,132,0.03)",
+              backdropFilter: "blur(8px)",
+              minWidth: "220px"
+            }}>
+              <span style={{ fontSize: "12px", color: "#666", textTransform: "uppercase", letterSpacing: "1.5px", fontWeight: "600" }}>DELIVERY</span>
+              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(0,255,132,0.1)", color: "#00FF84", fontSize: "12px" }}>Batch Write-Back Sink</div>
+                <div style={{ padding: "8px 12px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid rgba(0,255,132,0.1)", color: "#00FF84", fontSize: "12px" }}>Progress Webhooks</div>
+              </div>
+            </div>
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

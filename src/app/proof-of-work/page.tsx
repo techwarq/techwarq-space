@@ -108,8 +108,8 @@ export default function ProofOfWork() {
         }}>
           <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
             been working on an AI ugc agent — <span style={{ color: "#a0a0a0" }}>live on the platform right now</span> <br />
-            link→ <a href="https://nagent.ai/dashboard/ugc" className="pow-link" target="_blank" rel="noopener noreferrer">
-              https://nagent.ai/dashboard/ugc
+            link→ <a href="https://nagent.ai/agent-details/ugc" className="pow-link" target="_blank" rel="noopener noreferrer">
+              https://nagent.ai/agent-details/ugc
             </a> <br />
             anyone can drop a script or product link and generate high-fidelity ugc videos from scratch. <br />
             here are some outcomes.
@@ -224,8 +224,8 @@ export default function ProofOfWork() {
           }}>
             <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
               built an AI virtual photoshoot agent — <span style={{ color: "#a0a0a0" }}>live on the platform</span> <br />
-              link→ <a href="https://nagent.ai/dashboard/virtual-photoshoot-agent" className="pow-link" target="_blank" rel="noopener noreferrer">
-                https://nagent.ai/dashboard/virtual-photoshoot-agent
+              link→ <a href="https://nagent.ai/agent-details/virtual-photoshoot-agent" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://nagent.ai/agent-details/virtual-photoshoot-agent
               </a> <br />
               standard brand shoots are slow and expensive. this agent automates the entire photoshoot lifecycle—eliminating the need for studios and manual prompt engineering to produce studio-quality imagery <span style={{ color: "#fff", fontWeight: "600" }}>at massive scale</span>. <br />
               here is the underlying pipeline.

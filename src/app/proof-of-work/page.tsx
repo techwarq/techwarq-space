@@ -450,8 +450,8 @@ export default function ProofOfWork() {
           }}>
             <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
               built an enterprise campaign hub — <span style={{ color: "#a0a0a0" }}>live for bulk advertisers</span> <br />
-              link→ <a href="https://nagent.ai/dashboard/campaign-hub" className="pow-link" target="_blank" rel="noopener noreferrer">
-                https://nagent.ai/dashboard/campaign-hub
+              link→ <a href="https://nagent.ai/agent-details/campaign-hub" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://nagent.ai/agent-details/campaign-hub
               </a> <br />
               managing marketing across hundreds of SKUs is a manual bottleneck. this engine synchronizes with Google Sheets to autonomously generate copy, images, and metadata <span style={{ color: "#fff", fontWeight: "600" }}>in bulk</span>. <br />
               here is the practical flow.
@@ -769,6 +769,36 @@ export default function ProofOfWork() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* --- RESEARCH SECTION --- */}
+        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px", marginBottom: "80px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            research & experiments
+          </h1>
+
+          <ul style={{
+            paddingLeft: "28px",
+            marginBottom: "48px",
+            lineHeight: "1.8",
+            fontSize: "15px",
+            listStyleType: "disc",
+            color: "#d4d4d4"
+          }}>
+            <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+              i read research papers and try to build stuff — <span style={{ color: "#a0a0a0" }}>exploring the boundaries of LLM reasoning & memory</span> <br />
+              currently building my own small memory architecture. <br />
+              link→ <a href="/Memory v1 (2).pdf" className="pow-link" target="_blank" rel="noopener noreferrer">
+                Memory v1.pdf (Architecture breakdown)
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

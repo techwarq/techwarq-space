@@ -98,7 +98,97 @@ export default function Home() {
           proof of work
         </h1>
 
-        <ul style={{
+        {/* --- @TECHWARQ/AILENS SECTION --- */}
+        <div style={{ marginTop: "32px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            @techwarq/ailens
+          </h1>
+
+          <ul style={{
+            paddingLeft: "28px",
+            marginBottom: "48px",
+            lineHeight: "1.8",
+            fontSize: "15px",
+            listStyleType: "disc",
+            color: "#d4d4d4"
+          }}>
+            <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+              built a local-first LLM observability & testing suite — <span style={{ color: "#a0a0a0" }}>available on npm and github</span> <br />
+              npm→ <a href="https://www.npmjs.com/package/@techwarq/ailens" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://www.npmjs.com/package/@techwarq/ailens
+              </a> <br />
+              github→ <a href="https://github.com/techwarq/ai-lens" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://github.com/techwarq/ai-lens
+              </a> <br />
+              bringing real software engineering to AI apps. ailens allows developers to debug, diff, type-check, and trace LLM calls with zero overhead. <br />
+              here is the diagnostic engine in action.
+            </li>
+            <li style={{ paddingLeft: "8px" }}>
+              behind the scenes: engineered a high-performance tracing engine and a semantic rule evaluator.<br />
+              <div style={{ color: "#a0a0a0", fontSize: "14px", paddingLeft: "12px", borderLeft: "2px solid rgba(255,255,255,0.1)", marginTop: "12px", marginBottom: "8px" }}>
+                <span style={{ color: "#d4d4d4" }}>1. zero-latency logging:</span> async local-first session tracking with automated git-ignore management.<br />
+                <span style={{ color: "#d4d4d4" }}>2. semantic checks:</span> multi-tier validation using instant local regex and deep LLM-judge verification.<br />
+                <span style={{ color: "#d4d4d4" }}>3. causal chain analysis:</span> "why" engine that pinpoints exactly which part of a prompt caused a quality regression.<br />
+                <span style={{ color: "#d4d4d4" }}>4. behavioral diffing:</span> goes beyond text diffs to explain how model tone, length, and reasoning shifted between versions.<br />
+                <span style={{ color: "#d4d4d4" }}>5. pipeline tracing:</span> unified SDK for tracing multi-modal agents (LLM + Image + Video + Tools) with automatic dependency linking.
+              </div>
+            </li>
+          </ul>
+
+          <div style={{
+            marginBottom: "48px",
+            borderRadius: "24px",
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.05)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            backgroundColor: "#000"
+          }}>
+            <div style={{
+              padding: "12px 20px",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              borderBottom: "1px solid rgba(255,255,255,0.05)",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px"
+            }}>
+              <div style={{ display: "flex", gap: "6px" }}>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ff5f56" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
+              </div>
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>ailens_debug_session.log</span>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/ailens-mockup.png"
+              alt="AILens Diagnostic Engine"
+              style={{
+                width: "100%",
+                display: "block",
+                opacity: "1.0"
+              }}
+            />
+          </div>
+        </div>
+
+        {/* --- AI UGC AGENT SECTION --- */}
+        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            AI UGC Agent
+          </h1>
+          <ul style={{
           paddingLeft: "28px",
           marginBottom: "48px",
           lineHeight: "1.8",
@@ -201,7 +291,8 @@ export default function Home() {
             </div>
           ))}
         </div>
-
+        </div>
+        
         {/* --- VIRTUAL PHOTOSHOOT SECTION --- */}
         <div style={{ marginTop: "80px" }}>
           <h1 style={{
@@ -770,6 +861,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+
 
         {/* --- RESEARCH SECTION --- */}
         <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px", marginBottom: "80px" }}>

@@ -21,12 +21,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{
+    <div className="main-wrapper" style={{
       backgroundColor: "#1a1a1a",
       minHeight: "100vh",
       color: "#d4d4d4",
       fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-      padding: "48px 64px",
       display: "flex",
       flexDirection: "column",
       position: "relative"
@@ -85,6 +84,43 @@ export default function Home() {
           box-shadow: 0 20px 40px rgba(0,0,0,0.8);
           z-index: 10;
         }
+        .main-wrapper {
+          padding: 48px 64px;
+        }
+        .snips-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          margin-bottom: 80px;
+        }
+        .video-scroll-container {
+          width: calc(100vw - 64px);
+          margin-right: -64px;
+        }
+        .section-divider {
+          margin-top: 120px;
+          border-top: 1px solid rgba(255,255,255,0.05);
+          padding-top: 80px;
+        }
+        @media (max-width: 640px) {
+          .main-wrapper {
+            padding: 24px 20px;
+          }
+          .video-scroll-container {
+            width: calc(100vw - 20px);
+            margin-right: -20px;
+          }
+          .snips-grid {
+            grid-template-columns: 1fr;
+          }
+          .section-divider {
+            margin-top: 60px;
+            padding-top: 40px;
+          }
+          ul {
+            padding-left: 20px;
+          }
+        }
       `}</style>
 
       <div className="pow-container">
@@ -98,8 +134,102 @@ export default function Home() {
           proof of work
         </h1>
 
-        {/* --- @TECHWARQ/AILENS SECTION --- */}
+        {/* --- SNIPS AI SECTION --- */}
         <div style={{ marginTop: "32px" }}>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            marginBottom: "32px",
+            color: "#ffffff",
+            letterSpacing: "-0.5px"
+          }}>
+            Snips AI 🧠✨
+          </h1>
+
+          <ul style={{
+            paddingLeft: "28px",
+            marginBottom: "48px",
+            lineHeight: "1.8",
+            fontSize: "15px",
+            listStyleType: "disc",
+            color: "#d4d4d4"
+          }}>
+            <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
+              built a premium knowledge extraction platform — <span style={{ color: "#a0a0a0" }}>transforming complex content into bite-sized insights</span> <br />
+              link→ <a href="https://snips-ai-fe.vercel.app/" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://snips-ai-fe.vercel.app/
+              </a> <br />
+              snips ai distills 40-page research papers or 2-hour lectures into interactive "snips" cards with visual figure detection and precision extraction.
+            </li>
+            <li style={{ paddingLeft: "8px" }}>
+              behind the scenes: engineered a multi-modal analysis engine using gemini 3.1 pro and groq.<br />
+              <div style={{ color: "#a0a0a0", fontSize: "14px", paddingLeft: "12px", borderLeft: "2px solid rgba(255,255,255,0.1)", marginTop: "12px", marginBottom: "8px" }}>
+                <span style={{ color: "#d4d4d4" }}>1. deep document analysis:</span> page-by-page extraction with automated figure cropping and katex math rendering.<br />
+                <span style={{ color: "#d4d4d4" }}>2. intelligent youtube processing:</span> leverages native file api to "watch" videos and opencv for precise frame capture at key timestamps.<br />
+                <span style={{ color: "#d4d4d4" }}>3. mathematical explainer:</span> interactive sliders and symbols breakdown for complex formulas using math.js.<br />
+                <span style={{ color: "#d4d4d4" }}>4. high-performance stack:</span> fastapi backend with mongodb storage and next.js 14 frontend with emerald/dark aesthetics.<br />
+                <span style={{ color: "#d4d4d4" }}>5. learning progress:</span> activity heatmap visualization for daily knowledge accumulation.
+              </div>
+            </li>
+          </ul>
+
+          <div style={{
+            marginBottom: "48px",
+            borderRadius: "24px",
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.05)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+            backgroundColor: "#000"
+          }}>
+            <div style={{
+              padding: "12px 20px",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              borderBottom: "1px solid rgba(255,255,255,0.05)",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px"
+            }}>
+              <div style={{ display: "flex", gap: "6px" }}>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ff5f56" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
+                <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
+              </div>
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>snips_ai_demo.mp4</span>
+            </div>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls
+              style={{
+                width: "100%",
+                display: "block",
+                opacity: "1.0"
+              }}
+            >
+              <source src="/snips-demo.mp4" type="video/mp4" />
+            </video>
+          </div>
+
+          <div className="snips-grid">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/snips-1.png" 
+              alt="Snips AI Interface" 
+              style={{ width: "100%", borderRadius: "24px", border: "1px solid rgba(255,255,255,0.05)" }} 
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/snips-2.png" 
+              alt="Snips AI Knowledge Extraction" 
+              style={{ width: "100%", borderRadius: "24px", border: "1px solid rgba(255,255,255,0.05)" }} 
+            />
+          </div>
+        </div>
+
+        {/* --- @TECHWARQ/AILENS SECTION --- */}
+        <div className="section-divider">
           <h1 style={{
             fontSize: "26px",
             fontWeight: "700",
@@ -178,7 +308,7 @@ export default function Home() {
         </div>
 
         {/* --- AI UGC AGENT SECTION --- */}
-        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px" }}>
+        <div className="section-divider">
           <h1 style={{
             fontSize: "26px",
             fontWeight: "700",
@@ -223,9 +353,7 @@ export default function Home() {
           display: "flex",
           gap: "24px",
           overflowX: "auto",
-          paddingBottom: "16px",
-          width: "calc(100vw - 64px)", /* Account for container padding */
-          marginRight: "-64px" /* Bleed off right edge */
+          paddingBottom: "16px"
         }}>
           {mounted && [
             "/final-ugc-1775016828920-528968ac-aff1-43a2-bc0f-aaa62f8b8ad8 (1).mp4",
@@ -333,15 +461,13 @@ export default function Home() {
             </li>
           </ul>
 
-          <div className="video-scroll-container" style={{ 
-            display: "flex", 
-            alignItems: "center", 
+          <div className="video-scroll-container" style={{
+            display: "flex",
+            alignItems: "center",
             gap: "24px",
             marginTop: "40px",
             overflowX: "auto",
             paddingBottom: "16px",
-            width: "calc(100vw - 64px)",
-            marginRight: "-64px",
             fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
           }}>
             {/* Avatars Box */}
@@ -520,7 +646,7 @@ export default function Home() {
         </div>
 
         {/* --- ENTERPRISE CAMPAIGN HUB SECTION --- */}
-        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px" }}>
+        <div className="section-divider">
           <h1 style={{
             fontSize: "26px",
             fontWeight: "700",
@@ -596,15 +722,13 @@ export default function Home() {
             />
           </div>
 
-          <div className="video-scroll-container" style={{ 
-            display: "flex", 
-            alignItems: "center", 
+          <div className="video-scroll-container" style={{
+            display: "flex",
+            alignItems: "center",
             gap: "24px",
             marginTop: "40px",
             overflowX: "auto",
             paddingBottom: "16px",
-            width: "calc(100vw - 64px)",
-            marginRight: "-64px",
             fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
           }}>
             {/* Source Phase */}
@@ -679,7 +803,7 @@ export default function Home() {
           </div>
         </div>
         {/* --- FLOWDESK (ASTRA) SECTION --- */}
-        <div style={{ marginTop: "120px", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "80px" }}>
+        <div className="section-divider">
           <h1 style={{
             fontSize: "26px",
             fontWeight: "700",

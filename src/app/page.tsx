@@ -157,8 +157,8 @@ export default function Home() {
           }}>
             <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
               built a premium knowledge extraction platform — <span style={{ color: "#a0a0a0" }}>transforming complex content into bite-sized insights</span> <br />
-              link→ <a href="https://usenips.com/" className="pow-link" target="_blank" rel="noopener noreferrer">
-                https://usenips.com/
+              link→ <a href="https://usesnips.com/" className="pow-link" target="_blank" rel="noopener noreferrer">
+                usesnips.com
               </a> <br />
               snips ai distills 40-page research papers or 2-hour lectures into interactive "snips" cards with visual figure detection and precision extraction.
             </li>

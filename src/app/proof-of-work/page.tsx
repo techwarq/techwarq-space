@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import VideoPlayer from "@/components/VideoPlayer";
 
 export default function ProofOfWork() {
   const [mounted, setMounted] = useState(false);
@@ -242,8 +243,8 @@ export default function ProofOfWork() {
               boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
               backgroundColor: "#000"
             }}>
-              <video
-                autoPlay
+              <VideoPlayer
+                src={src}
                 loop
                 controls
                 playsInline
@@ -253,10 +254,7 @@ export default function ProofOfWork() {
                   aspectRatio: "9/16",
                   objectFit: "cover"
                 }}
-              >
-                <source src={src} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              />
 
               {/* Download Button */}
               <a

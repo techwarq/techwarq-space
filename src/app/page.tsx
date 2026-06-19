@@ -512,7 +512,7 @@ function DetailPanel({ p, index, onClose }: { p: Project | null; index: number; 
 /* FEEDBACK POPUP                                                        */
 /* ------------------------------------------------------------------ */
 
-const FEEDBACK_ENDPOINT = "https://allore-be-prod.sonalinayak0804.workers.dev/feedback";
+const FEEDBACK_ENDPOINT = "https://allore-be.sonalinayak0804.workers.dev/feedback";
 
 function FeedbackPopup({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [msg, setMsg] = useState("");

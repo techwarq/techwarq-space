@@ -228,6 +228,83 @@ function useReveal() {
 }
 
 /* ------------------------------------------------------------------ */
+/* GITHUB ACTIVITY                                                       */
+/* ------------------------------------------------------------------ */
+
+interface GHEvent {
+  repo: string;
+  message: string;
+  ago: string;
+  sha: string;
+  repoUrl: string;
+}
+
+function timeAgo(date: Date): string {
+  const s = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (s < 60) return "just now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
+
+function useGitHubActivity(username: string) {
+  const [events, setEvents] = useState<GHEvent[]>([]);
+  useEffect(() => {
+    fetch(`https://api.github.com/users/${username}/events/public?per_page=50`)
+      .then((r) => r.json())
+      .then((data: unknown[]) => {
+        const list: GHEvent[] = [];
+        for (const e of data as Record<string, unknown>[]) {
+          if (e.type !== "PushEvent") continue;
+          const payload = e.payload as Record<string, unknown>;
+          const commits = payload.commits as Record<string, string>[];
+          if (!commits?.length) continue;
+          const commit = commits[commits.length - 1];
+          const msg = commit.message?.split("\n")[0] ?? "";
+          const repoName = (e.repo as Record<string, string>).name;
+          list.push({
+            repo: repoName.replace(`${username}/`, ""),
+            message: msg,
+            ago: timeAgo(new Date(e.created_at as string)),
+            sha: commit.sha?.slice(0, 7) ?? "",
+            repoUrl: `https://github.com/${repoName}`,
+          });
+          if (list.length === 5) break;
+        }
+        setEvents(list);
+      })
+      .catch(() => {});
+  }, [username]);
+  return events;
+}
+
+function ActivityFeed() {
+  const events = useGitHubActivity("techwarq");
+  if (events.length === 0) return null;
+  return (
+    <div className="activity" data-reveal>
+      <div className="activity-hd">
+        <span className="activity-label">// recently shipped</span>
+        <span className="activity-live"><span className="activity-liveDot" />live</span>
+      </div>
+      <div className="activity-list">
+        {events.map((e, i) => (
+          <a key={i} href={e.repoUrl} target="_blank" rel="noreferrer" className="activity-row">
+            <span className="activity-dot" />
+            <span className="activity-repo">{e.repo}</span>
+            <span className="activity-msg">{e.message}</span>
+            <span className="activity-meta">{e.sha} · {e.ago}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* PREVIEW COMPONENTS                                                    */
 /* ------------------------------------------------------------------ */
 
@@ -435,7 +512,7 @@ function DetailPanel({ p, index, onClose }: { p: Project | null; index: number; 
 /* FEEDBACK POPUP                                                        */
 /* ------------------------------------------------------------------ */
 
-const FEEDBACK_ENDPOINT = "/api/feedback";
+const FEEDBACK_ENDPOINT = "https://allore-be-prod.sonalinayak0804.workers.dev/feedback";
 
 function FeedbackPopup({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [msg, setMsg] = useState("");
@@ -671,6 +748,56 @@ export default function Home() {
         }
         .hero-note:hover { animation: none; color: #fff; background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
         .hero-note:hover::before { display: none; }
+
+        /* ACTIVITY */
+        .activity { margin-bottom: clamp(20px,3vh,28px); }
+        .activity-hd {
+          display: flex; align-items: center; justify-content: space-between;
+          margin-bottom: 10px;
+        }
+        .activity-label {
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+          color: var(--muted-2); text-transform: uppercase;
+        }
+        .activity-live {
+          display: flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+          color: rgba(52,211,153,0.8); text-transform: uppercase;
+        }
+        .activity-liveDot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #34d399;
+          box-shadow: 0 0 6px rgba(52,211,153,0.7);
+          animation: livePulse 1.8s ease-in-out infinite;
+          display: inline-block;
+        }
+        @keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+        .activity-list { display: flex; flex-direction: column; gap: 5px; }
+        .activity-row {
+          display: grid; grid-template-columns: 8px auto 1fr auto;
+          align-items: center; gap: 12px;
+          padding: 9px 14px; border-radius: 12px;
+          background: var(--glass); border: 1px solid var(--glass-lo);
+          text-decoration: none;
+          transition: background .2s, border-color .2s;
+        }
+        .activity-row:hover { background: var(--glass-2); border-color: var(--glass-hi); }
+        .activity-dot {
+          width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+          background: #34d399; box-shadow: 0 0 5px rgba(52,211,153,0.5);
+        }
+        .activity-repo {
+          font-family: var(--mono); font-size: 11px; font-weight: 600;
+          color: var(--fg); white-space: nowrap; letter-spacing: 0.01em;
+        }
+        .activity-msg {
+          font-size: 12px; color: var(--muted);
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .activity-meta {
+          font-family: var(--mono); font-size: 10px; color: var(--muted-2);
+          white-space: nowrap; letter-spacing: 0.02em;
+        }
 
         /* ROWS HEAD */
         .rows-head {
@@ -1048,6 +1175,9 @@ export default function Home() {
               <button className="hero-link hero-note" onClick={() => setFb(true)}>leave a note ✎</button>
             </div>
           </header>
+
+          {/* ACTIVITY FEED */}
+          <ActivityFeed />
 
           {/* ROWS */}
           <div className="rows-head" data-reveal>

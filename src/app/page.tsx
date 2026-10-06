@@ -1134,7 +1134,8 @@ export default function Home() {
         .hero-about p + p { margin-top: 14px; color: var(--muted); font-size: 13px; }
         .hero-about .hl { font-style: normal; }
         .tech { border: 1px solid var(--line-2); border-radius: 999px; padding: 0 7px; white-space: nowrap; }
-        .hero-cta { margin-top: 26px; }
+        .hero-cta { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .pill-lg { padding: 9px 18px; }
 
         .activity { margin-top: 34px; display: grid; gap: 2px; max-width: 60ch; }
         .activity-hd { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted-2); margin-bottom: 6px; }
@@ -1334,9 +1335,8 @@ export default function Home() {
         .tape-2 { left: 63%; top: 56%; transform: rotate(14deg); z-index: 6; }
         .stamp-ph { width: 16%; padding: 1.4cqw; background: radial-gradient(circle, transparent 1.2cqw, #fff 1.3cqw) -2cqw -2cqw / 4cqw 4cqw; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
         .stamp-ph img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
-        .st-1 { left: 0%; top: 30%; transform: rotate(-14deg); z-index: 4; }
-        .st-2 { left: 75%; top: 12%; transform: rotate(10deg); }
-        .st-3 { left: 6%; top: 60%; transform: rotate(8deg); z-index: 4; }
+        .ph-cafe { left: 0%; top: 30%; width: 30%; height: 62%; transform: rotate(-6deg); z-index: 4; padding-bottom: 9cqw; }
+        .ph-cafe span { position: absolute; left: 0; right: 0; bottom: 2.4cqw; text-align: center; font-family: var(--hand); font-size: 3.6cqw; color: #3b3a6b; }
         .postcard {
           left: 44%; top: 50%; width: 52%; height: 44%; z-index: 5; background: #fbf6ea; transform: rotate(-3deg);
           box-shadow: 0 14px 26px -14px rgba(0,0,0,0.5); padding: 4cqw; display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw;
@@ -1512,6 +1512,9 @@ export default function Home() {
                 <div className="hero-cta">
                   <a href="#work" className="btn-blue">
                     See the work <span>→</span>
+                  </a>
+                  <a href="/resume.pdf" download="Sonali_Nayak_Resume.pdf" className="pill pill-lg">
+                    download resume ↓
                   </a>
                 </div>
                 <ActivityFeed />
@@ -1692,18 +1695,11 @@ export default function Home() {
                 strokeLinecap="round"
               />
             </svg>
-            <div className="stamp-ph st-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/collage/result_0_1775472750909.jpg" alt="" />
-            </div>
-            <div className="stamp-ph st-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/collage/pose.jpg" alt="" />
-            </div>
             <div className="folder-front" />
-            <div className="stamp-ph st-3">
+            <div className="polaroid ph-cafe">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/collage/result_1_1775473213552.jpg" alt="" />
+              <img src="/collage/cafe.jpg" alt="" />
+              <span>rainy day, still shipping</span>
             </div>
             <div className="postcard">
               <p>
@@ -1715,7 +1711,7 @@ export default function Home() {
               <div className="pc-r">
                 <div className="stamp-ph">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/collage/avatr.jpg" alt="" />
+                  <img src="/collage/cafe.jpg" alt="" />
                 </div>
                 <i />
                 <i />
@@ -1740,6 +1736,9 @@ export default function Home() {
               <button className="btn-blue" onClick={() => setFb(true)}>
                 write to me <span>→</span>
               </button>
+              <a href="/resume.pdf" download="Sonali_Nayak_Resume.pdf" className="pill pill-lg">
+                download resume ↓
+              </a>
             </div>
             <div className="contact-links">
               <a className="pill" href="https://github.com/techwarq" target="_blank" rel="noreferrer">

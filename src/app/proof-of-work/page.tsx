@@ -26,7 +26,7 @@ export default function ProofOfWork() {
       backgroundColor: "#1a1a1a",
       minHeight: "100vh",
       color: "#d4d4d4",
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+      fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       padding: "48px 64px",
       display: "flex",
       flexDirection: "column",
@@ -163,7 +163,7 @@ export default function ProofOfWork() {
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
               </div>
-              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>ailens_debug_session.log</span>
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "Inter, -apple-system, sans-serif" }}>ailens_debug_session.log</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -340,7 +340,7 @@ export default function ProofOfWork() {
             paddingBottom: "16px",
             width: "calc(100vw - 64px)",
             marginRight: "-64px",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+            fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           }}>
             {/* Avatars Box */}
             <div style={{
@@ -579,7 +579,7 @@ export default function ProofOfWork() {
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
               </div>
-              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>campaign_sync_audit.xlsx</span>
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "Inter, -apple-system, sans-serif" }}>campaign_sync_audit.xlsx</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -603,7 +603,7 @@ export default function ProofOfWork() {
             paddingBottom: "16px",
             width: "calc(100vw - 64px)",
             marginRight: "-64px",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+            fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           }}>
             {/* Source Phase */}
             <div style={{
@@ -737,7 +737,7 @@ export default function ProofOfWork() {
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#ffbd2e" }}></div>
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", backgroundColor: "#27c93f" }}></div>
               </div>
-              <span style={{ fontSize: "12px", color: "#666", fontFamily: "ui-monospace, monospace" }}>flowdesk_astra_admin_v4.0.app</span>
+              <span style={{ fontSize: "12px", color: "#666", fontFamily: "Inter, -apple-system, sans-serif" }}>flowdesk_astra_admin_v4.0.app</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

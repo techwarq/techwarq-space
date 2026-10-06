@@ -1484,7 +1484,6 @@ export default function Home() {
                   alt="A man in a hat lying on a cloud, reading a book against a blue sky"
                 />
               </div>
-              <figcaption className="mono">↳ head in the clouds, nose in a book · art by Roee Idah</figcaption>
             </figure>
             <div>
               <p className="hero-say" data-reveal>

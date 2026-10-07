@@ -99,7 +99,7 @@ export default function ProofOfWork() {
           proof of work
         </h1>
 
-        {/* --- @TECHWARQ/AILENS SECTION --- */}
+        {/* --- AILENS-EVALS SECTION --- */}
         <div style={{ marginTop: "32px" }}>
           <h1 style={{
             fontSize: "26px",
@@ -108,7 +108,7 @@ export default function ProofOfWork() {
             color: "#ffffff",
             letterSpacing: "-0.5px"
           }}>
-            @techwarq/ailens
+            ailens-evals
           </h1>
 
           <ul style={{
@@ -120,9 +120,9 @@ export default function ProofOfWork() {
             color: "#d4d4d4"
           }}>
             <li style={{ paddingLeft: "8px", marginBottom: "24px" }}>
-              built a local-first LLM observability & testing suite — <span style={{ color: "#a0a0a0" }}>available on npm and github</span> <br />
-              npm→ <a href="https://www.npmjs.com/package/@techwarq/ailens" className="pow-link" target="_blank" rel="noopener noreferrer">
-                https://www.npmjs.com/package/@techwarq/ailens
+              built a local-first LLM observability & testing suite — <span style={{ color: "#a0a0a0" }}>available on pypi and github</span> <br />
+              pypi→ <a href="https://pypi.org/project/ailens-evals/" className="pow-link" target="_blank" rel="noopener noreferrer">
+                https://pypi.org/project/ailens-evals/
               </a> <br />
               github→ <a href="https://github.com/techwarq/ai-lens" className="pow-link" target="_blank" rel="noopener noreferrer">
                 https://github.com/techwarq/ai-lens

@@ -248,7 +248,7 @@ const STACK: { group: string; tools: Tool[] }[] = [
         note: "my own SDK",
         glyph: "ailens",
         bg: "linear-gradient(160deg, #4f6bff, #1b2470)",
-        href: "https://www.npmjs.com/package/@techwarq/ailens",
+        href: "https://pypi.org/project/ailens-evals/",
       },
     ],
   },

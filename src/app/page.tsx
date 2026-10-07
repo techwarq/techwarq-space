@@ -1742,13 +1742,8 @@ export default function Home() {
               <a className="pill" href="https://blog.techwarq.space" target="_blank" rel="noreferrer">
                 blog ↗
               </a>
-              <a
-                className="pill"
-                href="https://www.npmjs.com/package/@techwarq/ailens"
-                target="_blank"
-                rel="noreferrer"
-              >
-                npm ↗
+              <a className="pill" href="https://pypi.org/project/ailens-evals/" target="_blank" rel="noreferrer">
+                pypi ↗
               </a>
             </div>
           </div>

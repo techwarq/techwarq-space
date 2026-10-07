@@ -1400,7 +1400,7 @@ export default function Home() {
           .nav-mark { display: none; }
           .seg a { padding: 6px 8px; font-size: 12px; }
           .hero { padding-top: 84px; }
-          .hero-name { white-space: normal; font-size: clamp(64px, 21vw, 140px); }
+          .hero-name { white-space: normal; font-size: clamp(64px, 21vw, 140px); font-variation-settings: "opsz" 72; }
           .hero-name sup { position: static; display: block; margin-bottom: 10px; }
           .hero-grid, .sec, .proj, .contact { grid-template-columns: minmax(0, 1fr); }
           .hero-photo .frame { aspect-ratio: 5/4; }

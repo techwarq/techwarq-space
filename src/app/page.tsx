@@ -122,12 +122,7 @@ const PROJECTS: Project[] = [
     ],
     tech: ["Python", "FastAPI", "Qwen / OpenRouter", "Qdrant", "Temporal"],
     cta: [{ label: "GitHub repo", href: "https://github.com/techwarq/Edith" }],
-    media: {
-      kind: "term",
-      cmd: "edith 'plan my week of posts'",
-      out: "→ 21 drafts · grounded in shipped commits",
-      log: ["memory · 3 tiers loaded", "temporal · 4 jobs scheduled", "whatsapp · connected", "linkedin · autopilot on"],
-    },
+    media: { kind: "video", src: "/edith-demo.mp4", poster: "/edith-demo.jpg" },
   },
 ];
 

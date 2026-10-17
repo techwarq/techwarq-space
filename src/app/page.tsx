@@ -27,7 +27,10 @@ interface Project {
   tech: string[];
   cta: Cta[];
   media: Media;
+  win?: Win;
 }
+
+interface Win { intro: string; scores: [string, string][]; lines: string[]; aside: string; img: string; }
 
 const UGC_CLIPS: Clip[] = [
   {
@@ -123,6 +126,16 @@ const PROJECTS: Project[] = [
     tech: ["Python", "FastAPI", "Qwen / OpenRouter", "Qdrant", "Temporal"],
     cta: [{ label: "GitHub repo", href: "https://github.com/techwarq/Edith" }],
     media: { kind: "video", src: "/edith-demo.mp4", poster: "/edith-demo.jpg" },
+    win: {
+      intro: "gave my personal agent Eddy a brain and ran it on mem0's own locomo benchmark",
+      scores: [
+        ["eddy", "90.4%"],
+        ["mem0 (gpt-5)", "92.3%"],
+      ],
+      lines: ["beats mem0 on reasoning, 86% vs 77%", "whole run: $0.84"],
+      aside: "if i use opus 5.5 it perform way better i guessss",
+      img: "/edith-locomo.png",
+    },
   },
 ];
 
@@ -695,6 +708,31 @@ function AppIcon({ t }: { t: Tool }) {
   );
 }
 
+function WinNote({ w }: { w: Win }) {
+  return (
+    <aside className="win">
+      <span className="win-label">✦ win note</span>
+      <p>{w.intro}</p>
+      <p className="win-sub">cheap models only, qwen3.7-flash:</p>
+      <dl className="win-scores">
+        {w.scores.map(([k, v]) => (
+          <React.Fragment key={k}>
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+      {w.lines.map((l) => (
+        <p key={l}>{l}</p>
+      ))}
+      <a className="win-chart" href={w.img} target="_blank" rel="noreferrer">
+        <img src={w.img} loading="lazy" alt="LOCOMO results: Eddy 90.4% vs mem0 92.3% overall, 86.3% vs 76.5% on open-domain" />
+      </a>
+      <p className="win-aside">{w.aside}</p>
+    </aside>
+  );
+}
+
 function ProjectMedia({ p }: { p: Project }) {
   const m = p.media;
   if (m.kind === "reel") return <Coverflow clips={m.clips} />;
@@ -1162,6 +1200,21 @@ export default function Home() {
         .proj-open:hover { color: var(--blue); }
         .ico-plus { width: 22px; height: 22px; transition: transform .3s; }
         .proj-open:hover .ico-plus { transform: rotate(90deg); }
+        .win {
+          margin-top: 28px; max-width: 34ch; padding: 18px 20px 16px; background: #fff6bf; border-radius: 4px;
+          transform: rotate(-1.2deg); box-shadow: 0 1px 0 rgba(27,25,22,0.06), 0 22px 30px -22px rgba(27,25,22,0.45);
+          font-size: 13px; line-height: 1.5; display: grid; gap: 8px;
+        }
+        .win-label { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+        .win-sub { color: var(--muted); }
+        .win-scores { display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; font-variant-numeric: tabular-nums; }
+        .win-scores dt { color: var(--muted); }
+        .win-scores dd { font-weight: 600; }
+        .win-scores dt:first-of-type { color: var(--ink); }
+        .win-chart { display: block; margin-top: 4px; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); transition: transform .25s; }
+        .win-chart:hover { transform: scale(1.02); }
+        .win-chart img { display: block; width: 100%; height: auto; }
+        .win-aside { font-family: var(--hand); font-size: 19px; line-height: 1.15; color: #3b3a6b; transform: rotate(-1deg); }
         .proj-tag { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 16px; color: var(--muted); }
         .media-card {
           border-radius: 22px; overflow: hidden; background: var(--ink);
@@ -1560,6 +1613,7 @@ export default function Home() {
                   </button>
                 </div>
                 <p className="proj-tag">{p.tag}</p>
+                {p.win && <WinNote w={p.win} />}
               </div>
               <div>
                 <p className="proj-lead">{p.lead}</p>

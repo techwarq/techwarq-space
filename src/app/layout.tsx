@@ -3,8 +3,21 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.techwarq.space"),
   title: "Sonali Nayak — Fullstack Developer",
   description: "Portfolio of Sonali Nayak — Fullstack Developer",
+  openGraph: {
+    title: "Sonali Nayak — Let's work on ambitious things together",
+    description: "Fullstack & AI engineer building agents that do real work.",
+    url: "/",
+    siteName: "techwarq",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sonali Nayak — Let's work on ambitious things together",
+    description: "Fullstack & AI engineer building agents that do real work.",
+  },
 };
 
 export default function RootLayout({
